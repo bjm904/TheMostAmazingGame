@@ -369,7 +369,7 @@ context.drawImage(img,x+w-12,y+h-105,24,24);
 
 
 
-if(gameState[3]==3){
+if(gameState[3]==3||gameState[3]==5){
 //FADE BACKGROUND
 context.globalAlpha=0.2;
 context.fillStyle="#000000";
@@ -502,9 +502,12 @@ context.fillText("Evasion: ",415,345);
 context.fillText(aEEntity[2],530,345);
 
 
-
+//DRAW HIT OR MISS
+context.font="20px Arial";
+context.fillText(hitormiss,270,150);
 
 //DRAW OK AND CANCEL
+if(gameState[3]==3){
 var my_gradient=context.createLinearGradient(270,207,270,243);
 var r;
 if((cursor[0]==9&&cursor[1]==7)||(cursor[0]==10&&cursor[1]==7)||(cursor[0]==11&&cursor[1]==7)){
@@ -538,7 +541,7 @@ context.stroke();
 context.fillStyle="black";
 context.font="20px Arial";
 context.fillText("CANCEL",282,295);
-
+}
 
 }
 
@@ -587,7 +590,7 @@ context.stroke();
 
 var canvas=document.getElementById("game");
 var context=canvas.getContext("2d");
-
+var fps = 20;
 var currentEntity=0;
 var currentEnemy;
 var current;
@@ -596,10 +599,11 @@ var aEEntity;
 var cursor=[1,1];
 var debugItem="";
 var drawGrid=0;
+var hitormiss="";
 var entity = [
 ["Entity 1",0,0,1,1,2,10,1,"entity",1,1,0,1,0,1,"Times New Roman",['Bat',0,'bat',1,0,0,0,0,0,20],['Gloves',1,'gloves',0,0,99,0,0,0,5],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 //0-friendly name,1-type,2-inventory,3-x,4-y,5-remaining moves,6-Health,7-Strength,8-texture,9-level,10-Speed,11-has moved,12-deployed,13-has attacked,14-Defence
-["Entity 2",0,0,2,4,20,10,1,"entity",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Entity 2",0,0,2,4,20,10,5,"entity",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 
 
 ];
@@ -668,38 +672,7 @@ if(aEEntity[4]>100) aEEntity[3]=100;
 }
 
 
-function attack(){
-attacking:{
-while(current[6]>=1){
-while(currentEnemy[6]>=1){
-if(Math.floor((Math.random()*100)+0)<=aEntity[3]){
-var h=aEntity[1]-aEEntity[0]
-if(h<0)h=0;
-currentEnemy[6]-=h
-if(currentEnemy[6]<=0){
-alert("You win");
-currentEnemy[12]=0;
-setMode(0);
-break attacking;
-}
-//alert("you hit him");
-} //else alert("you missed him");
-if(Math.floor((Math.random()*100)+0)<=aEEntity[3]){
-var h=aEntity[1]-aEEntity[0]
-if(h<0)h=0;
-current[6]-=h
-if(current[6]<=0){
-alert("You Loose");
-current[12]=0;
-setMode(0);
-break attacking;
-}
-//alert("You got hit");
-} //else alert("he missed you");
-}
-}
-}
-}
+
 
 
 
@@ -850,20 +823,16 @@ if(entity[i][12]==1){
 if(entity[i][1]==1){
 if(cursor[0]==entity[i][3]&&cursor[1]==entity[i][4]){
 attackConfirm(i);
-}
-}
-}
-}
-
-}
+}}}}}
 if(gameState[3]==3){
-if(distance(cursor[0],cursor[1],9,7)==0||distance(cursor[0],cursor[1],10,7)==0||distance(cursor[0],cursor[1],11,7)==0||distance(cursor[0],cursor[1],12,7)==0){
-attack();
+if(cursor[0]==10&&cursor[1]==7){
+setMode(5);
 }
-if(distance(cursor[0],cursor[1],9,9)==0||distance(cursor[0],cursor[1],10,9)==0||distance(cursor[0],cursor[1],11,9)==0){
+if(cursor[0]==10&&cursor[1]==9){
+cursor[0]=current[3];
+cursor[1]=current[4];
 setMode(0);
-}
-}
+}}
 
 
 }
@@ -995,13 +964,11 @@ function change(i){
 currentEntity=i;
 }
 function setMode(i){
-gameState[3]=i;
 if(i==3){
-
+cursor[0]=10;
+cursor[1]=7;
 }
-if(i==0){
-
-}
+gameState[3]=i;
 }
 function distance(x1,y1,x2,y2){
 var dy=x1-x2;
@@ -1013,27 +980,78 @@ return d;
 }
 
 
-
-//Move Cursor
-function moveCursor(x){
-
-if(x=="right"&&(cursor[0]!=30)){cursor[0]++;}
-else if(x=="left"&&cursor[0]!=1){cursor[0]--;}
-else if(x=="up"&&cursor[1]!=1){cursor[1]--;}
-else if(x=="down"&&cursor[1]!=20){cursor[1]++;}
-}
-
-
-
-var fps = 20;
 function changeFps(){
 var i = document.getElementById('fps');
 fps = i.options[i.selectedIndex].value;
 }
 
+//MOVE CURSOR
+function moveCursor(x){
+if(gameState[3]==3){//If in attack confirm mode
+if(x=="up"){
+cursor[0]=10;
+cursor[1]=7;
+}
+else if(x=="down"){
+cursor[0]=10;
+cursor[1]=9;
+}
+} else{
+if(x=="right"&&(cursor[0]!=30)){cursor[0]++;}
+else if(x=="left"&&cursor[0]!=1){cursor[0]--;}
+else if(x=="up"&&cursor[1]!=1){cursor[1]--;}
+else if(x=="down"&&cursor[1]!=20){cursor[1]++;}
+}}
+
+//ATTACKING CLOCK AND FUNTION
+var turn=0;
+setInterval(function(){
+if(gameState[3]==5){
+attacking:{
+if(current[6]<=0){
+alert("You Loose");
+current[12]=0;//Kill
+cursor[0]=currentEnemy[3];//Move cursor to winner
+cursor[1]=currentEnemy[4];
+setMode(0);
+break attacking;
+}
+if(currentEnemy[6]<=0){
+alert("You win");
+currentEnemy[12]=0;//Kill
+cursor[0]=current[3];//Move cursor to winner
+cursor[1]=current[4];
+setMode(0);
+break attacking;
+}
+if(turn==0){
+if(Math.floor((Math.random()*100)+0)<=aEntity[3]){
+var h=aEntity[1]-aEEntity[0]
+if(h<0)h=0;
+currentEnemy[6]-=h
+hitormiss="He hit you";
+} else hitormiss="You missed him";
+turn=1;
+}
+else if(turn==1){
+if(Math.floor((Math.random()*100)+0)<=aEEntity[3]){
+var h=aEntity[1]-aEEntity[0]
+if(h<0)h=0;
+current[6]-=h
+hitormiss="You got hit";
+} else hitormiss="He missed you";
+turn=0;
+}
+}
+}
+},600);
+
+
+
 
 //START GAME CLOCK
 setInterval(function(){
+
 
 current=entity[currentEntity];
 //CUSOR OVER CHANGES TO ENTITY
@@ -1049,7 +1067,6 @@ currentEntity=i;
 document.getElementById('debugEntityAmount').innerHTML = entity.length;
 document.getElementById('debugCurrentFps').innerHTML = fps;
 document.getElementById('debugMode').innerHTML = gameState[3];
-
 
 
 canvas.width = canvas.width;
