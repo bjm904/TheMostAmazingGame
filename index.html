@@ -78,7 +78,16 @@ window.addEventListener("keydown", function(e) {
 
 
 
-
+    var imageList = [
+        "images/missing1.png",
+        "images/grass.png",
+        "images/road.png"
+    ];
+    for(var i = 0; i < imageList.length; i++ ) 
+    {
+        var imageObject = new Image();
+        imageObject.src = imageList[i];
+    }
 
 
 
@@ -86,9 +95,7 @@ window.addEventListener("keydown", function(e) {
 
 function draw(canvas){
 var context=canvas.getContext("2d");
-
-
-
+      
 
 
 /*
@@ -602,7 +609,6 @@ context.moveTo(x0+20,y0);
 context.lineTo(x0,y0+20);
 context.stroke();
 }
-
 
 var canvas=document.getElementById("game");
 var context=canvas.getContext("2d");
