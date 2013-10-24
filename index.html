@@ -42,8 +42,8 @@ CLICK outside selectable move area or attack area changes mode to 0
 1762-1024/768-85
 
 **/
-document.write(navigator.userAgent);
-
+if(navigator.userAgent.indexOf("Chrome")==-1) alert("This game is only compatable with Google Chrome. Sorry for the inconvienience");
+else{
 var i=window.screen.availHeight+window.screen.availWidth;
 
 
@@ -1078,7 +1078,7 @@ draw(canvas);
 },fps);
 
 
-
+}//End Browser Check
 </script>
 	<td>
 		<table>
