@@ -75,7 +75,9 @@ window.addEventListener("keydown", function(e) {
 }, false);
 
 
-var allImg=["bat","concrete","crossroad","entity","fillerLower","fillerUpper","fillerWeapon","gloves","grass","heart","missing0","missing1","road","roadCross","roadTurn","sidewalk","sidewalkEdge","sidewalkGrass","threeRoad"]
+var allImg=["bat","concrete","crossroad","entity","fillerLower","fillerUpper",
+"fillerWeapon","gloves","grass","heart","missing0","missing1","road","roadCross",
+"roadTurn","sidewalk","sidewalkEdge","sidewalkGrass","threeRoad"]
 for(i=0;i<allImg.length;i++){
 window["img"+allImg[i]]=new Image();
 window["img"+allImg[i]].src="images/"+allImg[i]+".png";
@@ -722,7 +724,10 @@ levels[gameState[0]][7][i][15],levels[gameState[0]][7][i][16],levels[gameState[0
 //NEW BACKGROUND
 function newB(x){
 if(x==""||x==null){
-map[levels[gameState[0]][4]].push([prompt('New Background\nTexture without .png'),0,0,cursor[0],cursor[1]]);
+var x=prompt("Texture name without .png","road");
+if(x!=""&&x!=null){
+map[levels[gameState[0]][4]].push([x,0,0,cursor[0],cursor[1]]);
+}
 } else {
 map[levels[gameState[0]][4]].push([x,0,0,cursor[0],cursor[1]]);
 }
@@ -752,7 +757,7 @@ entity[i][13]=0;}//reset has moved
 
 if(action=="rename"){
 i=prompt('Enter a new name for "'+entity[currentEntity][0]+'".',entity[currentEntity][0]);
-if(i!==null&&i!=="") entity[currentEntity][0] = i;
+if(i!=null&&i!="") entity[currentEntity][0] = i;
 }
 if(action=="newE"){
 var x=cursor[0];
@@ -919,8 +924,8 @@ if(drawGrid==1)drawGrid=0;
 else drawGrid=1;
 }
 if(action=="save"){
-name=prompt("Enter a save name");
-if(name!==""){
+var name=prompt("Enter a save name");
+if(name!=""&&name!=null){
 fullSave=[gameState,map,levels,entity];
 var saveEntityJson = JSON.stringify(fullSave);
 document.saveForm.name.value = name;
@@ -930,16 +935,16 @@ document.forms["saveForm"].submit();
 }
 }
 if(action=="load"){
-name=prompt("What is the name of your save?");
-if(name!==""){
+var name=prompt("What is the name of your save?");
+if(name!=""&&name!=null){
 document.saveForm.name.value = name;
 document.saveForm.action.value = "load";
 document.forms["saveForm"].submit();
 }
 }
 if(action=="delete"){
-name=prompt("What is the name of the save you wish to delete?");
-if(name!==""){
+var name=prompt("What is the name of the save you wish to delete?");
+if(name!=""&&name!=null){
 document.saveForm.name.value = name;
 document.saveForm.action.value = "delete";
 document.forms["saveForm"].submit();
@@ -965,8 +970,9 @@ entity=i[3];
 }
 if(action=="loadLevel"){
 var x=prompt("What Level ID do you want to load?","0");
+if(x!=""&&x!=null){
 loadLevel(x);
-
+}
 }
 
 
