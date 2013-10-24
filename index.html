@@ -53,7 +53,7 @@ jQuery(document).bind('keydown.down',function (evt){moveCursor('down');});
 jQuery(document).bind('keydown.m',function (evt){action('moveMode');});
 jQuery(document).bind('keydown.a',function (evt){action('attack');});
 jQuery(document).bind('keydown.end',function (evt){action('end');});
-jQuery(document).bind('keydown.esc',function (evt){setMode(0);});
+jQuery(document).bind('keydown.esc',function (evt){action('esc');});
 
 
 jQuery(document).bind('keydown.shift_e',function (evt){action('newE');});
@@ -711,6 +711,11 @@ map[levels[gameState[0]][4]].push([x,0,0,cursor[0],cursor[1]]);
 
 function action(action){
 
+if(action=="esc"){
+if(gameState[3]!=5){//Not allowed to cancel a battle
+setMode(0);
+}
+}
 
 if(action=="end"){//PLAYER CHANGING
 setMode(0);
