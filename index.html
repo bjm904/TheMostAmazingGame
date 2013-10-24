@@ -600,6 +600,7 @@ var cursor=[1,1];
 var debugItem="";
 var drawGrid=0;
 var hitormiss="";
+var turn=0;
 var entity = [
 ["Entity 1",0,0,1,1,2,10,1,"entity",1,1,0,1,0,1,"Times New Roman",['Bat',0,'bat',1,0,0,0,0,0,20],['Gloves',1,'gloves',0,0,99,0,0,0,5],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 //0-friendly name,1-type,2-inventory,3-x,4-y,5-remaining moves,6-Health,7-Strength,8-texture,9-level,10-Speed,11-has moved,12-deployed,13-has attacked,14-Defence
@@ -973,6 +974,10 @@ if(i==3){
 cursor[0]=10;
 cursor[1]=7;
 }
+if(i==5||i==3){
+turn=0;
+hitormiss=" ";
+}
 gameState[3]=i;
 }
 function distance(x1,y1,x2,y2){
@@ -1009,7 +1014,7 @@ else if(x=="down"&&cursor[1]!=20){cursor[1]++;}
 }}
 
 //ATTACKING CLOCK AND FUNTION
-var turn=0;
+
 setInterval(function(){
 if(gameState[3]==5){
 attacking:{
@@ -1056,9 +1061,10 @@ turn=0;
 
 //START GAME CLOCK
 setInterval(function(){
-
-
 current=entity[currentEntity];
+
+
+
 //CUSOR OVER CHANGES TO ENTITY
 if(gameState[3]==0){
 for(i=0;i<entity.length;i++){
