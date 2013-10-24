@@ -789,7 +789,7 @@ setMode(4);
 }
 }
 }
-if(gameState[3]==1){
+else if(gameState[3]==1){
 
 var d=distance(cursor[0],cursor[1],entity[currentEntity][3],entity[currentEntity][4]);
 if(d<=entity[currentEntity][5]&&d!=0){
@@ -816,7 +816,7 @@ gameState[1]++;
 
 
 }
-if(gameState[3]==2){
+else if(gameState[3]==2){
 
 for(i=0;i<entity.length;i++){
 if(entity[i][12]==1){
@@ -824,7 +824,7 @@ if(entity[i][1]==1){
 if(cursor[0]==entity[i][3]&&cursor[1]==entity[i][4]){
 attackConfirm(i);
 }}}}}
-if(gameState[3]==3){
+else if(gameState[3]==3){
 if(cursor[0]==10&&cursor[1]==7){
 setMode(5);
 }
@@ -862,8 +862,8 @@ if(d==1){
 attackConfirm(i);
 }}}}}
 else if(u>1){
-setMode(2);
 alert("Please select an enemy to attack.");
+setMode(2);
 } else alert("You must be next to an enemy to attack.");
 } else alert("You do not control "+entity[currentEntity][0]+". So you cannot attack with it.");
 }
@@ -1029,7 +1029,7 @@ if(Math.floor((Math.random()*100)+0)<=aEntity[3]){
 var h=aEntity[1]-aEEntity[0]
 if(h<0)h=0;
 currentEnemy[6]-=h
-hitormiss="He hit you";
+hitormiss="You hit him";
 } else hitormiss="You missed him";
 turn=1;
 }
@@ -1038,13 +1038,13 @@ if(Math.floor((Math.random()*100)+0)<=aEEntity[3]){
 var h=aEntity[1]-aEEntity[0]
 if(h<0)h=0;
 current[6]-=h
-hitormiss="You got hit";
+hitormiss="He hit you";
 } else hitormiss="He missed you";
 turn=0;
 }
 }
 }
-},600);
+},500);
 
 
 
