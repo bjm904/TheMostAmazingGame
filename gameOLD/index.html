@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+Math.random();
+Math.floor((Math.random()*10)+1);
+<html>
+<title>The Most Amazing Game</title>
+<body style="text-align:center;">
+<table><tr><td>
+<canvas width="665" height="665" id="game"></canvas>
+</td>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="jqdialog.min.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css"/>
+<script>
+function draw(wx,wy,canvas){
+var context=canvas.getContext("2d");
+
+//GRID
+for(v=1;v<21;v++){
+for(i=1;i<21;i++){
+context.rect(v*30,i*30,30,30);
+context.stroke();
+}
+}
+
+for(i=0;i<entity.length;i++){
+var img = new Image();
+img.src = "images/"+entity[i][8]+".png";
+context.drawImage(img,entity[i][3]*30,entity[i][4]*30);
+}
+/*
+x0=entity[0][3]*30;
+x0=x0+5;
+y0=entity[0][4]*30;
+y0=y0+5;
+context.moveTo(x0,y0);
+context.lineTo(x0+20,y0+20);
+context.stroke();
+context.moveTo(x0+20,y0);
+context.lineTo(x0,y0+20);
+context.stroke();
+*/
+
+//SQUARE
+wx=wx*30;
+wy=wy*30;
+context.fillStyle="#FF0000";
+context.fillRect(wx+2,wy+2,26,26);
+}
+
+function star(ctx, x, y, r, p, m)
+{
+    ctx.save();
+    ctx.beginPath();
+    ctx.translate(x, y);
+    ctx.moveTo(0,0-r);
+    for (var i = 0; i < p; i++)
+    {
+        ctx.rotate(Math.PI / p);
+        ctx.lineTo(0, 0 - (r*m));
+        ctx.rotate(Math.PI / p);
+        ctx.lineTo(0, 0 - r);
+    }
+    ctx.fill();
+    ctx.restore();
+}
+
+var canvas=document.getElementById("game");
+var context=canvas.getContext("2d");
+
+
+var wx=11;
+var wy=11;
+
+var playersTurn=0;
+
+var entity = [
+["Player 1",0,5,1,1,5,20,1,"default"],
+//0-friendly name,1-owner,2-starting moves,3-x,4-y,5-remaining moves,6-Health,7-Strength,8-texture
+["Player 2",1,5,20,20,5,20,1,"default"]
+];
+
+function disable(button,toggle){
+if(button=="up"||"left"||"right"||"down") var buttonimg="arrow";
+else var buttonimg=button;
+
+if(button!="movment"){
+if(toggle==1){
+document.getElementById(button).src = "images/"+buttonimg+".png";
+document.getElementById(button).style.cursor = "url(images/cursorPoint.cur),auto";
+document.getElementById(button).setAttribute("onclick","move('"+button+"');");
+
+
+}else{
+document.getElementById(button).src = "images/disabled"+buttonimg+".png";
+document.getElementById(button).style.cursor = "default";
+document.getElementById(button).style.cursor = "url(images/cursorDefault.cur),auto";
+document.getElementById(button).setAttribute("onclick","");
+}
+
+}
+else{
+disable("up",toggle);
+disable("right",toggle);
+disable("down",toggle);
+disable("left",toggle);
+
+}
+}
+
+document.writeln("hello");
+
+
+
+
+function action(action){
+if(action=="end"){//PLAYER CHANGING
+if(entity[playersTurn][1]==0)playersTurn=1;
+else if(entity[playersTurn][1]==1)playersTurn=0;
+else alert("Error with Entity owner");
+for(i=0;i<entity.length;i++){
+entity[i][5]=entity[i][2];}//reset turns
+disable("movment",1);//reset movement buttons
+}
+
+if(action=="rename"){
+entity[playersTurn][0]=prompt('Enter a new name for "'+entity[playersTurn][0]+'".',entity[playersTurn][0]);
+}
+if(action=="new"){
+entity.push([prompt('Name','NoName'),prompt('Owner. "0" is P1, "1" is P2.','0'),prompt('Max Moves','5'),prompt('Start X cordinate.','11'),prompt('Start Y cordinate.','10'),prompt('This turns remaining moves','5'),prompt('Health','20'),prompt('Strength','1'),prompt('Texture without .png','default')]);
+}
+}
+
+function change(i){
+playersTurn=i;
+}
+
+function move(x){
+if(x=="right"){entity[playersTurn][3]++; entity[playersTurn][5]--;}
+else if(x=="left"){entity[playersTurn][3]--; entity[playersTurn][5]--;}
+else if(x=="up"){entity[playersTurn][4]--; entity[playersTurn][5]--;}
+else if(x=="down"){entity[playersTurn][4]++; entity[playersTurn][5]--;}
+else{ alert("You cannot move there!");}
+
+}
+
+
+
+/*(function() {
+  var requestAnimationFrame = window.requestAnimationFrame || 
+                              window.mozRequestAnimationFrame || 
+                              window.webkitRequestAnimationFrame ||
+                              window.msRequestAnimationFrame;
+
+  window.requestAnimationFrame = requestAnimationFrame;
+})();
+requestAnimationFrame(clock);
+*/
+var fps = 20;
+function changeFps(){
+var i = document.getElementById('fps');
+fps = i.options[i.selectedIndex].value;
+}
+
+
+//START GAME CLOCK
+setInterval(function(){
+//function clock(){
+
+
+var dy=entity[1][3]-entity[0][4];
+var dx=entity[1][3]-entity[0][3];
+dy=Math.abs(dy);
+dx=Math.abs(dx);
+var d=dy+dx;
+
+if(d==1) disable("attack",1);
+else disable("attack",0);
+
+if(entity[playersTurn][3]==1) disable("left",0);
+else disable("left",1);
+if(entity[playersTurn][3]==20) disable("right",0);
+else disable("right",1);
+if(entity[playersTurn][4]==1) disable("up",0);
+else disable("up",1);
+if(entity[playersTurn][4]==20) disable("down",0);
+else disable("down",1);
+if(entity[playersTurn][5]<=0) disable("movment",0);
+
+
+
+var fancyHealth = "";
+for (var i=0;i<entity[playersTurn][6];i++){
+fancyHealth = fancyHealth+"|";
+}
+document.getElementById('health').innerHTML = fancyHealth;
+document.getElementById('strength').innerHTML = entity[playersTurn][7];
+document.getElementById('playersTurn').innerHTML = entity[playersTurn][0];
+document.getElementById('movesLeft').innerHTML = entity[playersTurn][5];
+document.getElementById('distance').innerHTML = d;
+document.getElementById('amount').innerHTML = entity.length;
+document.getElementById('debug').innerHTML = entity[playersTurn]+fps;
+
+document.getElementById('entityList').innerHTML = ""; //Make Entity List
+for(i=0;i<entity.length;i++){
+r=entity[i][1];
+e=entity[playersTurn][1];
+if(r==e){//see if entity ownership is the same as current player
+document.getElementById('entityList').innerHTML += "<button href='javascript:void(0)' onclick='change("+i+")'>"+entity[i][0]+"</button>";
+}
+}
+
+
+canvas.width = canvas.width;
+draw(wx,wy,canvas);
+
+
+//requestAnimationFrame(clock);
+},fps);
+
+
+
+</script><td>
+Current Player Raw:<br><b id="debug">?</b><br><br>
+Distance: <b id="distance">?</b> - look in code<br><have to reconfigure due to multiple enemies>
+Entity #: <b id="amount">?</b> -- 
+FPS:<select id="fps" onchange="changeFps()"><option value="60">16</option><option value="50">20</option><option value="40">25</option><option value="30" selected="selected">33</option><option value="20">50</option><option value="10">100</option></select><br>
+<button id="new" onclick="action('new');">DEBUG: Add New Entity</button>
+<table id="panel1">
+<tr>
+<td id="panel1text">
+<h1><a id="playersTurn">?</a></h1><hr>
+Strength: <b id="strength">?</b><br>
+Health: <b id="health">?</b><br>
+Moves left: <b id="movesLeft">?</b>
+
+</td></tr></table>
+<table><tr>
+Your characters:<br>
+</tr><tr><td><a id="entityList"></a></td></tr>
+
+
+</table><br><table id="panel2"><tr><td>
+
+<img id="up" onclick="move('up');" src="" style="-webkit-transform:rotate(0deg);" /><br>
+<img id="left" onclick="move('left');" src="" style="-webkit-transform:rotate(270deg);" />
+<img id="right" onclick="move('right');" src="" style="-webkit-transform:rotate(90deg);" /><br>
+<img id="down" onclick="move('down');" src="" style="-webkit-transform:rotate(180deg);" /><br>
+<!--
+<button id="up" onclick="move('up');">/\</button><br>
+<button id="left" onclick="move('left');"><--</button>
+<button id="right" onclick="move('right');"></button><br>
+<button id="down" onclick="move('down');">\/</button><br>
+-->
+<button id="attack" onclick="action('attack');">Attack</button><br>
+<button id="rename" onclick="action('rename');">Rename</button><br>
+<button onclick="action('end');">End Turn</button>
+
+<td>
+</tr>
+</table>
+</td>
+</tr>
+
+</table>
+</body>
+Bryce Meyer
+</html>

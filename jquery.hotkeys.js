@@ -12,7 +12,7 @@
 
 (function(jQuery){
 
-	// jQuery.hotkeys = {
+	jQuery.hotkeys = {
 		version: "0.8+",
 
 		specialKeys: {
