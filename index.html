@@ -1122,12 +1122,12 @@ draw(canvas);
 					<button id="debugListSaves" onclick="action('debugListSaves');">List Online Saves</button>
 					<button id="delete" onclick="action('delete');">Delete Online Save</button>
 				</td>
-				<td id="panel">
+				<td id="panel1">
 					<h7>Click any texture to add it to map.</h7><hr>
 					<script>
 					for(i=0;i<allImg.length;i++){
 					var onclick="newB('"+allImg[i]+"')";
-					document.write("<img id='"+allImg[i]+"' onclick="+onclick+" src="+window["img"+allImg[i]].src+">");
+					document.write("<img id='"+allImg[i]+"' onclick="+onclick+" src="+window["img"+allImg[i]].src+" width='30px' height='30px' >");
 					}
 					</script>
 				</td>

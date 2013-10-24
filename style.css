@@ -16,3 +16,10 @@ body {
   padding: 10px;
   vertical-align:top;
 }
+#panel1{
+  background: #ffffff;
+  border: 2px solid #000000;
+  padding: 10px;
+  vertical-align:top;
+  width:400px;
+}
