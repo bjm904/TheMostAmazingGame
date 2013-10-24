@@ -75,11 +75,13 @@ window.addEventListener("keydown", function(e) {
 }, false);
 
 
-images=["missing1","entity","grass","road"]
-for(i=0;i<images.length;i++){
-window["img"+images[i]]=new Image();
-window["img+"images[i]].src="images/"+images[i]+".png";
+var allImg=["bat","concrete","crossroad","entity","fillerLower","fillerUpper","fillerWeapon","gloves","grass","heart","missing0","missing1","road","roadCross","roadTurn","sidewalk","sidewalkEdge","sidewalkGrass","threeRoad"]
+for(i=0;i<allImg.length;i++){
+window["img"+allImg[i]]=new Image();
+window["img"+allImg[i]].src="images/"+allImg[i]+".png";
 }
+
+
 
 function draw(canvas){
 var context=canvas.getContext("2d");
@@ -185,8 +187,7 @@ buffer.width = buffer.height = 30;
 var bcontext=buffer.getContext('2d');
 bcontext.translate(x, y);
 bcontext.rotate(o);
-var img = new Image();
-img=window["img"+map[levels[gameState[0]][4]][i][0];
+var img=window["img"+map[levels[gameState[0]][4]][i][0]];
 bcontext.drawImage(img,0,0);
 context.drawImage(buffer,map[levels[gameState[0]][4]][i][3]*30,map[levels[gameState[0]][4]][i][4]*30);
 }
@@ -212,10 +213,8 @@ context.globalAlpha=1;
 //ENTITIES
 for(i=0;i<entity.length;i++){
 if(entity[i][12]==1){
-var img = new Image();
-
-if(entity[i][8]==null||entity[i][8]=="") img=window["imgmissing"+entity[i][1]];/*img.src = "images/missing"+entity[i][1]+".png"; */
-else img=window["img"+entity[i][8]];
+if(entity[i][8]==null||entity[i][8]=="") var img=window["imgmissing"+entity[i][1]];/*img.src = "images/missing"+entity[i][1]+".png"; */
+else var img=window["img"+entity[i][8]];
 context.drawImage(img,entity[i][3]*30+1,entity[i][4]*30+1);
 }
 }
@@ -269,8 +268,7 @@ context.fillStyle="#000000";//Entity Name
 context.font="15px Arial";
 context.fillText(entity[i][0],x+2,y+15);
 for(u=0;u<entity[i][6];u++){//hearts
-var img = new Image();
-img.src = "images/heart.png";
+var img=window["imgheart"];
 context.drawImage(img,x+2+(9*u),y+22,9,9);
 }
 }
@@ -335,28 +333,24 @@ context.beginPath();//weapon
 context.strokeStyle="#000000";
 context.rect(x+90,y+30,30,30);
 context.stroke();
-var img = new Image();
-img.src = "images/"+entity[currentEntity][16][2]+".png";
+var img=window["img"+entity[currentEntity][16][2]];
 context.drawImage(img,x+90,y+30,30,30);
 
 context.beginPath();//upper armer
 context.strokeStyle="#000000";
 context.rect(x+90,y+60,30,30);
 context.stroke();
-var img = new Image();
-img.src = "images/"+entity[currentEntity][17][2]+".png";
+var img=window["img"+entity[currentEntity][17][2]];
 context.drawImage(img,x+90,y+60,30,30);
 
 context.beginPath();//lower armer
 context.strokeStyle="#000000";
 context.rect(x+90,y+90,30,30);
 context.stroke();
-var img = new Image();
-img.src = "images/"+entity[currentEntity][18][2]+".png";
+var img=window["img"+entity[currentEntity][18][2]];
 context.drawImage(img,x+90,y+90,30,30);
 for(u=0;u<entity[currentEntity][6];u++){//hearts
-var img = new Image();
-img.src = "images/heart.png";
+var img=window["imgheart"];
 context.drawImage(img,x+2+(9*u),y+22,9,9);
 }
 /*
@@ -412,8 +406,7 @@ context.fillStyle="#000000";
 context.font="30px "+entity[currentEntity][15];
 context.fillText(entity[currentEntity][0],100,130);
 for(u=0;u<current[6];u++){//hearts
-var img = new Image();
-img.src = "images/heart.png";
+var img=window["imgheart"];
 context.drawImage(img,80+(14*u),142,13,13);
 }
 context.beginPath();//LINE
@@ -431,23 +424,20 @@ context.beginPath();//Weapon
 context.strokeStyle="#000000";
 context.rect(80,195,32,32);
 context.stroke();
-var img = new Image();
-img.src = "images/"+entity[currentEntity][16][2]+".png";
+var img=window["img"+entity[currentEntity][16][2]];
 context.drawImage(img,80,195,30,30);
 
 context.beginPath();//Upper Armor
 context.rect(150,195,32,32);
 context.stroke();
-var img = new Image();
-img.src = "images/"+entity[currentEntity][17][2]+".png";
+var img=window["img"+entity[currentEntity][17][2]];
 context.drawImage(img,150,195,30,30);
 
 context.beginPath();//Lower Armor
 context.strokeStyle="#000000";
 context.rect(190,195,32,32);
 context.stroke();
-var img = new Image();
-img.src = "images/"+entity[currentEntity][18][2]+".png";
+var img=window["img"+entity[currentEntity][18][2]];
 context.drawImage(img,190,195,30,30);
 
 context.fillText("Power: ",75,270);
@@ -466,8 +456,7 @@ context.fillStyle="#000000";
 context.font="30px "+currentEnemy[15];
 context.fillText(currentEnemy[0],440,130);
 for(u=0;u<currentEnemy[6];u++){//hearts
-var img = new Image();
-img.src = "images/heart.png";
+var img=window["imgheart"];
 context.drawImage(img,420+(14*u),142,13,13);
 }
 context.beginPath();//Line
@@ -485,23 +474,20 @@ context.beginPath();//Weapon
 context.strokeStyle="#000000";
 context.rect(420,195,32,32);
 context.stroke();
-var img = new Image();
-img.src = "images/"+currentEnemy[16][2]+".png";
+var img=window["img"+currentEnemy[16][2]];
 context.drawImage(img,420,195,30,30);
 
 context.beginPath();//Upper Armor
 context.rect(490,195,32,32);
 context.stroke();
-var img = new Image();
-img.src = "images/"+currentEnemy[17][2]+".png";
+var img=window["img"+currentEnemy[17][2]];
 context.drawImage(img,490,195,30,30);
 
 context.beginPath();//Lower Armor
 context.strokeStyle="#000000";
 context.rect(530,195,32,32);
 context.stroke();
-var img = new Image();
-img.src = "images/"+currentEnemy[18][2]+".png";
+var img=window["img"+currentEnemy[18][2]];
 context.drawImage(img,530,195,30,30);
 
 context.fillText("Power: ",415,270);
@@ -1131,17 +1117,13 @@ draw(canvas);
 					<button id="delete" onclick="action('delete');">Delete Online Save</button>
 				</td>
 				<td id="panel">
-				<h7>Click any texture to add it to map.</h7><hr>
-					<img id="textRoad" onclick="newB('road');" src="images/road.png">
-					<img id="textRoadCross" onclick="newB('roadCross');" src="images/roadCross.png">
-					<img id="textThreeRoad" onclick="newB('threeRoad');" src="images/threeRoad.png">
-					<img id="textCrossRoad" onclick="newB('crossroad');" src="images/crossroad.png">
-					<img id="textRoadTurn" onclick="newB('roadTurn');" src="images/roadTurn.png">
-					<img id="textconcrete" onclick="newB('concrete');" src="images/concrete.png">
-					<img id="textsidewalk" onclick="newB('sidewalk');" src="images/sidewalk.png">
-					<img id="textsidewalkGrass" onclick="newB('sidewalkGrass');" src="images/sidewalkGrass.png">
-					<img id="textsidewalkEdge" onclick="newB('sidewalkEdge');" src="images/sidewalkEdge.png">
-					<img id="textGrass" onclick="newB('grass');" src="images/grass.png">
+					<h7>Click any texture to add it to map.</h7><hr>
+					<script>
+					for(i=0;i<allImg.length;i++){
+					var onclick="newB('"+allImg[i]+"')";
+					document.write("<img id='"+allImg[i]+"' onclick="+onclick+" src="+window["img"+allImg[i]].src+">");
+					}
+					</script>
 				</td>
 			</tr>
 		</table>
