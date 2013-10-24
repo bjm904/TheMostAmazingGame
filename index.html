@@ -75,21 +75,11 @@ window.addEventListener("keydown", function(e) {
 }, false);
 
 
-
-    var imageList = [
-        "images/missing1.png",
-        "images/grass.png",
-        "images/road.png"
-    ];
-    for(var i = 0; i < imageList.length; i++ ) 
-    {
-        var imageObject = new Image();
-        imageObject.src = imageList[i];
-    }
-
-var imgMissing1=new Image();
-imgMissing1.src="images/missing1.png";
-
+images=["missing1","entity","grass","road"]
+for(i=0;i<images.length;i++){
+window["img"+images[i]]=new Image();
+window["img+"images[i]].src="images/"+images[i]+".png";
+}
 
 function draw(canvas){
 var context=canvas.getContext("2d");
@@ -196,7 +186,7 @@ var bcontext=buffer.getContext('2d');
 bcontext.translate(x, y);
 bcontext.rotate(o);
 var img = new Image();
-img.src = "images/"+map[levels[gameState[0]][4]][i][0]+".png";
+img=window["img"+map[levels[gameState[0]][4]][i][0];
 bcontext.drawImage(img,0,0);
 context.drawImage(buffer,map[levels[gameState[0]][4]][i][3]*30,map[levels[gameState[0]][4]][i][4]*30);
 }
@@ -224,9 +214,8 @@ for(i=0;i<entity.length;i++){
 if(entity[i][12]==1){
 var img = new Image();
 
-
-if(entity[i][8]==null||entity[i][8]=="") img=imgMissing1;/*img.src = "images/missing"+entity[i][1]+".png"; */
-else img.src = "images/"+entity[i][8]+".png";
+if(entity[i][8]==null||entity[i][8]=="") img=window["imgmissing"+entity[i][1]];/*img.src = "images/missing"+entity[i][1]+".png"; */
+else img=window["img"+entity[i][8]];
 context.drawImage(img,entity[i][3]*30+1,entity[i][4]*30+1);
 }
 }
