@@ -13,9 +13,6 @@
 		<td>
 			<canvas width="935" height="635" id="game"></canvas>
 		</td>
-
-
-
 <script>
 /*
 NOTE NOTES NOTES
@@ -44,6 +41,7 @@ CLICK outside selectable move area or attack area changes mode to 0
 **/
 if(navigator.userAgent.indexOf("Chrome")==-1) alert("This game is only compatable with Google Chrome. Sorry for the inconvienience");
 else{
+
 var i=window.screen.availHeight+window.screen.availWidth;
 
 
@@ -89,8 +87,8 @@ window.addEventListener("keydown", function(e) {
         imageObject.src = imageList[i];
     }
 
-
-
+var imgMissing1=new Image();
+imgMissing1.src="images/missing1.png";
 
 
 function draw(canvas){
@@ -227,7 +225,7 @@ if(entity[i][12]==1){
 var img = new Image();
 
 
-if(entity[i][8]==null||entity[i][8]=="") img.src = "images/missing"+entity[i][1]+".png"; 
+if(entity[i][8]==null||entity[i][8]=="") img=imgMissing1;/*img.src = "images/missing"+entity[i][1]+".png"; */
 else img.src = "images/"+entity[i][8]+".png";
 context.drawImage(img,entity[i][3]*30+1,entity[i][4]*30+1);
 }
