@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>The Most Amazing Game</title>
+<script src="jquery-1.7.1.js"></script>
+<script src="jquery.hotkeys.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<table>
+	<tr>
+		<td>
+			<canvas width="935" height="635" id="game"></canvas>
+		</td>
+
+
+
+<script>
+/*
+NOTE NOTES NOTES
+
+Math.random();
+Math.floor((Math.random()*10)+1);
+1078999930
+
+CLICK outside selectable move area or attack area changes mode to 0
+
+2970-1920/1080-140
+2746-1776/1000-130
+2700-1680/1050-140
+2470-1600/900-120
+2310-1440/900-120
+2104-1366/768-100
+2354-1360/1024-110
+2098-1360/768-100
+2274-1280/1024-100
+2210-1280/960-100
+2050-1280/800-100
+2018-1280/768-100
+1986-1152/864-100
+1762-1024/768-85
+
+**/
+
+
+var i=window.screen.availHeight+window.screen.availWidth;
+
+
+jQuery(document).bind('keydown.return',function (evt){action('select');});
+jQuery(document).bind('keydown.left',function (evt){moveCursor('left');});
+jQuery(document).bind('keydown.right',function (evt){moveCursor('right');});
+jQuery(document).bind('keydown.up',function (evt){moveCursor('up');});
+jQuery(document).bind('keydown.down',function (evt){moveCursor('down');});
+jQuery(document).bind('keydown.m',function (evt){action('moveMode');});
+jQuery(document).bind('keydown.a',function (evt){action('attack');});
+jQuery(document).bind('keydown.end',function (evt){action('end');});
+jQuery(document).bind('keydown.esc',function (evt){setMode(0);});
+
+
+jQuery(document).bind('keydown.shift_e',function (evt){action('newE');});
+jQuery(document).bind('keydown.shift_b',function (evt){action('newB');});
+jQuery(document).bind('keydown.shift_r',function (evt){action('rotateB');});
+jQuery(document).bind('keydown.shift_d',function (evt){action('debugDistance');});
+jQuery(document).bind('keydown.shift_c',function (evt){action('debugCords');});
+jQuery(document).bind('keydown.del_b',function (evt){action('delB');});
+jQuery(document).bind('keydown.del_e',function (evt){action('delE');});
+
+
+
+
+window.addEventListener("keydown", function(e) {
+    // space and arrow keys
+    if([17, 32, 35, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+    }
+}, false);
+
+
+
+
+
+
+
+
+
+function draw(canvas){
+var context=canvas.getContext("2d");
+
+
+
+
+
+/*
+//CANVAS BORDER
+context.beginPath();
+context.rect(28,28,905,604);
+context.strokeStyle="black";
+context.stroke();
+*/
+
+//MAP BORDER
+context.beginPath();
+context.rect(30,30,600,600);
+context.strokeStyle="black";
+context.stroke();
+//LEVEL INFO
+context.fillStyle="#ffffff";
+context.fillRect(660,30,270,210);
+//context.beginPath();
+context.strokeStyle="#000000";
+context.rect(660,30,270,210);
+context.stroke();
+context.fillStyle="black";
+context.font="35px Arial";
+context.fillText(levels[gameState[0]][0],670,65);
+context.font="12px Arial";
+context.fillText('XP',895,42);
+context.font="35px Arial";
+context.fillText(gameState[1],885,75);
+var i=levels[gameState[0]][0].length;
+var u=i*21;
+u=u+670;
+context.beginPath();//Horizontal line
+context.strokeStyle="grey";
+context.moveTo(670,78);
+context.lineTo(u,78);
+context.stroke();
+
+//EQUIPPED
+context.fillStyle="#ffffff";
+context.fillRect(660,255,270,60);
+//context.beginPath();
+context.strokeStyle="black";
+context.rect(660,255,270,60);
+context.stroke();
+
+//INVENTORY
+context.fillStyle="#ffffff";//background
+context.fillRect(660,330,270,300);
+context.beginPath();//border
+context.strokeStyle="#000000";
+context.rect(660,330,270,300);
+context.stroke();
+context.fillStyle="black";
+context.font="35px Arial";
+context.fillText('Inventory',720,365);
+
+for(i=0;i<8;i++){
+context.beginPath();//V-Line 1
+context.strokeStyle="#000000";
+context.lineWidth=0.25;
+context.moveTo(690+i*30,370);
+context.lineTo(690+i*30,590);
+context.stroke();
+}
+for(i=0;i<7;i++){
+context.beginPath();//V-Line 1
+context.strokeStyle="#000000";
+context.lineWidth=0.25;
+context.moveTo(670,390+i*30);
+context.lineTo(920,390+i*30);
+context.stroke();
+}
+//GRID
+if(drawGrid==1){
+var x=gameState[4]+gameState[6];
+var y=gameState[5]+gameState[7];
+for(v=gameState[6];v<x;v++){
+for(i=gameState[7];i<y;i++){
+context.beginPath();
+context.rect(v*30,i*30,30,30);
+context.stroke();
+}
+}
+}
+
+//BACKGROUND
+if(gameState[3]!=4){
+context.globalAlpha=1;
+for(i=0;i<map[levels[gameState[0]][4]].length;i++){
+var r = map[levels[gameState[0]][4]][i][2];
+var o,x,y;
+if(r==0){ o=0; x=0; y=0;}
+if(r==1){ o=1.570796327; x=30; y=0;}
+if(r==2){ o=3.141592654; x=30; y=30;}
+if(r==3){ o=4.712388980; x=0; y=30;}
+var buffer = document.createElement('canvas');
+buffer.width = buffer.height = 30;
+var bcontext=buffer.getContext('2d');
+bcontext.translate(x, y);
+bcontext.rotate(o);
+var img = new Image();
+img.src = "images/"+map[levels[gameState[0]][4]][i][0]+".png";
+bcontext.drawImage(img,0,0);
+context.drawImage(buffer,map[levels[gameState[0]][4]][i][3]*30,map[levels[gameState[0]][4]][i][4]*30);
+}
+}
+//MOVEABLE AREA
+if(gameState[3]==1){
+for(i=1;i<21;i++){
+for(o=1;o<21;o++){
+d = distance(i,o,entity[currentEntity][3],entity[currentEntity][4]);
+if(d<=entity[currentEntity][5]){
+wx=i*30;
+wy=o*30;
+context.globalAlpha=0.4;
+context.fillStyle="#38C2C0";
+context.fillRect(wx+2,wy+2,26,26);
+}
+}
+}
+}
+
+context.globalAlpha=1;
+
+//ENTITIES
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+var img = new Image();
+
+
+if(entity[i][8]==null||entity[i][8]=="") img.src = "images/missing"+entity[i][1]+".png"; 
+else img.src = "images/"+entity[i][8]+".png";
+context.drawImage(img,entity[i][3]*30+1,entity[i][4]*30+1);
+}
+}
+
+//ATTACKABLE PLACES
+if(gameState[3]==2){
+for(i=1;i<21;i++){
+for(o=1;o<21;o++){
+for(u=0;u<entity.length;u++){
+if(entity[u][1]==1){
+if(entity[u][12]==1){
+d = distance(entity[currentEntity][3],entity[currentEntity][4],entity[u][3],entity[u][4]);
+if(d==1){
+wx=entity[u][3]*30;
+wy=entity[u][4]*30;
+context.globalAlpha=0.4;
+context.fillStyle="#741BB0";
+context.fillRect(wx+2,wy+2,26,26);
+}
+}
+}
+}
+}
+}
+}
+
+
+
+
+//DRAW INFO BOXES FOR ENTITIES
+if(gameState[3]==0){
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+if(entity[i][3]==cursor[0] && entity[i][4]==cursor[1]){
+var x,y;
+var w=95;//Info box width and hight
+var h=35;
+if(entity[currentEntity][3]<=10&&entity[currentEntity][4]<=10){x=entity[currentEntity][3]*30+30; y=entity[currentEntity][4]*30+30;}//upper left
+if(entity[currentEntity][3]>10&&entity[currentEntity][4]<=10){ x=entity[currentEntity][3]*30-w; y=entity[currentEntity][4]*30+30;}//upper right
+if(entity[currentEntity][3]<=10&&entity[currentEntity][4]>10){ x=entity[currentEntity][3]*30+30; y=entity[currentEntity][4]*30-h;}//lower left
+if(entity[currentEntity][3]>10&&entity[currentEntity][4]>10){ x=entity[currentEntity][3]*30-w; y=entity[currentEntity][4]*30-h;}//lower right
+context.globalAlpha=0.7;
+context.fillStyle="#ffffff";//background
+context.fillRect(x,y,w,h);
+context.globalAlpha=1;
+context.beginPath();//border
+context.strokeStyle="#000000";
+context.rect(x,y,w,h);
+context.stroke();
+context.fillStyle="#000000";//Entity Name
+context.font="15px Arial";
+context.fillText(entity[i][0],x+2,y+15);
+for(u=0;u<entity[i][6];u++){//hearts
+var img = new Image();
+img.src = "images/heart.png";
+context.drawImage(img,x+2+(9*u),y+22,9,9);
+}
+}
+}
+}
+}
+//DRAW EPANDED INFO BOXES FOR ENTITIES
+if(gameState[3]==4){
+var x,y;
+var w=150;//Info box width and hight
+var h=150;
+if(entity[currentEntity][3]<=10&&entity[currentEntity][4]<=10){x=entity[currentEntity][3]*30+30; y=entity[currentEntity][4]*30+30;}//upper left
+if(entity[currentEntity][3]>10&&entity[currentEntity][4]<=10){ x=entity[currentEntity][3]*30-w; y=entity[currentEntity][4]*30+30;}//upper right
+if(entity[currentEntity][3]<=10&&entity[currentEntity][4]>10){ x=entity[currentEntity][3]*30+30; y=entity[currentEntity][4]*30-h;}//lower left
+if(entity[currentEntity][3]>10&&entity[currentEntity][4]>10){ x=entity[currentEntity][3]*30-w; y=entity[currentEntity][4]*30-h;}//lower right
+context.globalAlpha=0.7;
+context.fillStyle="#ffffff";//background
+context.fillRect(x,y,w,h);
+context.globalAlpha=1;
+context.beginPath();//border
+context.strokeStyle="#000000";
+context.rect(x,y,w,h);
+context.stroke();
+context.fillStyle="#000000";//Entity Name
+context.font="15px Arial";
+context.fillText(entity[currentEntity][0],x+2,y+15);
+context.font="11px Arial";//Level
+context.fillText('Level',x+115,y+10);
+context.font="20px Arial";
+context.fillText(entity[currentEntity][9],x+120,y+30);
+context.font="11px Arial";
+context.fillText('Speed: ',x+2,y+45);//Speed
+context.fillText(entity[currentEntity][10],x+39,y+45);
+context.fillText('Strength: ',x+2,y+57);//Strength
+context.fillText(entity[currentEntity][7],x+48,y+57);
+context.fillText('Base Def: ',x+2,y+69);//Base Defence
+context.fillText(entity[currentEntity][14],x+51,y+69);
+
+context.fillText('Power: ',x+2,y+93);//Power
+var a=current[7]+current[16][3];
+if (a<0) a=0;
+context.fillText(a,x+40,y+93);
+
+context.fillText('Accuracy: ',x+2,y+105);//Accuracy
+var a=75+(current[10]*3)+10+current[16][6];
+if (a>100) a=100;
+if (a<0) a=0;
+context.fillText(a+"%",x+54,y+105);
+
+context.fillText('Evasion: ',x+2,y+117);//Evasion
+var a=(current[10]*2)+20-current[17][9]+current[18][9];
+if (a<0) a=0;
+context.fillText(a,x+45,y+117);
+
+context.fillText('Defense: ',x+2,y+129);//Defence
+var a=current[14]+current[17][5]+current[18][5];
+if (a<0) a=0;
+context.fillText(a,x+49,y+129);
+
+
+context.beginPath();//weapon
+context.strokeStyle="#000000";
+context.rect(x+90,y+30,30,30);
+context.stroke();
+var img = new Image();
+img.src = "images/"+entity[currentEntity][16][2]+".png";
+context.drawImage(img,x+90,y+30,30,30);
+
+context.beginPath();//upper armer
+context.strokeStyle="#000000";
+context.rect(x+90,y+60,30,30);
+context.stroke();
+var img = new Image();
+img.src = "images/"+entity[currentEntity][17][2]+".png";
+context.drawImage(img,x+90,y+60,30,30);
+
+context.beginPath();//lower armer
+context.strokeStyle="#000000";
+context.rect(x+90,y+90,30,30);
+context.stroke();
+var img = new Image();
+img.src = "images/"+entity[currentEntity][18][2]+".png";
+context.drawImage(img,x+90,y+90,30,30);
+for(u=0;u<entity[currentEntity][6];u++){//hearts
+var img = new Image();
+img.src = "images/heart.png";
+context.drawImage(img,x+2+(9*u),y+22,9,9);
+}
+/*
+var img = new Image();//CLOSE X
+img.src = "images/x.png";
+context.drawImage(img,x+w-8,y+h-8,16,16);
+var img = new Image();//Stats TAB
+img.src = "images/stats.png";
+context.drawImage(img,x+w-12,y+h-105,24,24);
+*/
+}
+
+
+
+
+
+if(gameState[3]==3){
+//FADE BACKGROUND
+context.globalAlpha=0.2;
+context.fillStyle="#000000";
+context.fillRect(35,60,570,340);
+
+context.globalAlpha=1;
+//DRAW INFO BOXES
+context.fillStyle="#ffffff";
+context.fillRect(60,90,180,280);
+context.fillStyle="#ffffff";
+context.fillRect(400,90,180,280);
+context.beginPath();
+context.strokeStyle="#000000";
+context.rect(60,90,180,280);
+context.stroke();
+context.beginPath();
+context.rect(400,90,180,280);
+context.stroke();
+
+
+context.fillStyle="#ffffff";
+context.fillRect(60,90,180,280);
+context.fillStyle="#ffffff";
+context.fillRect(400,90,180,280);
+context.beginPath();
+context.strokeStyle="#000000";
+context.rect(60,90,180,280);
+context.stroke();
+context.beginPath();
+context.rect(400,90,180,280);
+context.stroke();
+
+
+//ENTITY BATTLE CONFIRM BOX
+context.fillStyle="#000000";
+context.font="30px "+entity[currentEntity][15];
+context.fillText(entity[currentEntity][0],100,130);
+for(u=0;u<current[6];u++){//hearts
+var img = new Image();
+img.src = "images/heart.png";
+context.drawImage(img,80+(14*u),142,13,13);
+}
+context.beginPath();//LINE
+context.moveTo(75,162);
+context.lineTo(225,162);
+context.strokeStyle="#B2B2B2";
+context.stroke();
+
+context.fillStyle="#000000";
+context.font="20px "+entity[currentEntity][15];
+context.fillText("Weapon",65,180);
+context.fillText("Armor",160,180);
+
+context.beginPath();//Weapon
+context.strokeStyle="#000000";
+context.rect(80,195,32,32);
+context.stroke();
+var img = new Image();
+img.src = "images/"+entity[currentEntity][16][2]+".png";
+context.drawImage(img,80,195,30,30);
+
+context.beginPath();//Upper Armor
+context.rect(150,195,32,32);
+context.stroke();
+var img = new Image();
+img.src = "images/"+entity[currentEntity][17][2]+".png";
+context.drawImage(img,150,195,30,30);
+
+context.beginPath();//Lower Armor
+context.strokeStyle="#000000";
+context.rect(190,195,32,32);
+context.stroke();
+var img = new Image();
+img.src = "images/"+entity[currentEntity][18][2]+".png";
+context.drawImage(img,190,195,30,30);
+
+context.fillText("Power: ",75,270);
+context.fillText(aEntity[1],190,270);
+context.fillText("Accuracy: ",75,295);
+context.fillText(aEntity[3]+"%",190,295);
+context.fillText("Defence: ",75,320);//Battle defence
+context.fillText(aEntity[0],190,320);//Battle defence
+context.fillText("Evasion: ",75,345);
+context.fillText(aEntity[2],190,345);
+
+
+
+//ENEMY BATTLE CONFIRM BOX
+context.fillStyle="#000000";
+context.font="30px "+currentEnemy[15];
+context.fillText(currentEnemy[0],440,130);
+for(u=0;u<currentEnemy[6];u++){//hearts
+var img = new Image();
+img.src = "images/heart.png";
+context.drawImage(img,420+(14*u),142,13,13);
+}
+context.beginPath();//Line
+context.moveTo(410,162);
+context.lineTo(565,162);
+context.strokeStyle="#B2B2B2";
+context.stroke();
+
+context.fillStyle="#000000";
+context.font="20px "+currentEnemy[15];
+context.fillText("Weapon",405,180);
+context.fillText("Armor",500,180);
+
+context.beginPath();//Weapon
+context.strokeStyle="#000000";
+context.rect(420,195,32,32);
+context.stroke();
+var img = new Image();
+img.src = "images/"+currentEnemy[16][2]+".png";
+context.drawImage(img,420,195,30,30);
+
+context.beginPath();//Upper Armor
+context.rect(490,195,32,32);
+context.stroke();
+var img = new Image();
+img.src = "images/"+currentEnemy[17][2]+".png";
+context.drawImage(img,490,195,30,30);
+
+context.beginPath();//Lower Armor
+context.strokeStyle="#000000";
+context.rect(530,195,32,32);
+context.stroke();
+var img = new Image();
+img.src = "images/"+currentEnemy[18][2]+".png";
+context.drawImage(img,530,195,30,30);
+
+context.fillText("Power: ",415,270);
+context.fillText(aEEntity[1],530,270);
+context.fillText("Accuracy: ",415,295);
+context.fillText(aEEntity[3]+"%",530,295);
+context.fillText("Defence: ",415,320);//Battle defence
+context.fillText(aEEntity[0],530,320);//Battle defence
+context.fillText("Evasion: ",415,345);
+context.fillText(aEEntity[2],530,345);
+
+
+
+
+//DRAW OK AND CANCEL
+var my_gradient=context.createLinearGradient(270,207,270,243);
+var r;
+if((cursor[0]==9&&cursor[1]==7)||(cursor[0]==10&&cursor[1]==7)||(cursor[0]==11&&cursor[1]==7)){
+r="#5E5E5E";
+} else r="white";
+my_gradient.addColorStop(0,r);
+my_gradient.addColorStop(1,"green");
+
+context.fillStyle=my_gradient;
+context.fillRect(270,207,102,36);
+context.beginPath();
+context.rect(270,207,102,36);
+context.stroke();
+context.fillStyle="#000000";
+context.font="20px Arial";
+context.fillText("CONFIRM",275,232);
+
+
+var my_gradient=context.createLinearGradient(275,270,275,302);
+if((cursor[0]==9&&cursor[1]==9)||(cursor[0]==10&&cursor[1]==9)||(cursor[0]==11&&cursor[1]==9)){
+r="#5E5E5E";
+} else r="white";
+my_gradient.addColorStop(0,r);
+my_gradient.addColorStop(1,"red");
+
+context.fillStyle=my_gradient;
+context.fillRect(275,270,92,32);
+context.beginPath();
+context.rect(275,270,92,32);
+context.stroke();
+context.fillStyle="black";
+context.font="20px Arial";
+context.fillText("CANCEL",282,295);
+
+
+}
+
+
+
+
+function debug(item){
+if(item=="distance"){
+for(i=1;i<21;i++){
+for(o=1;o<21;o++){
+d = distance(i,o,entity[currentEntity][3],entity[currentEntity][4]);
+context.fillStyle="#000000";
+context.font="10px Arial";    //DEBUG TO SHOW DISTANCE
+context.fillText(d,i*30+10,o*30+15);
+}
+}
+}
+if(item=="cords"){
+for(i=1;i<21;i++){
+for(o=1;o<21;o++){
+d = i+","+o;
+context.fillStyle="#000000";
+context.font="9px Arial";    //DEBUG TO SHOW COORDINATES
+context.fillText(d,i*30+4,o*30+18);
+}
+}
+}
+}
+debug(debugItem);
+//DRAW CUSOR / CROSSHAIR
+x0=cursor[0]*30;
+x0=x0+5;
+y0=cursor[1]*30;
+y0=y0+5;
+context.beginPath();
+context.strokeStyle="#000000";
+context.globalAlpha=1;
+context.moveTo(x0,y0);
+context.lineTo(x0+20,y0+20);
+context.stroke();
+context.beginPath();
+context.moveTo(x0+20,y0);
+context.lineTo(x0,y0+20);
+context.stroke();
+}
+
+
+var canvas=document.getElementById("game");
+var context=canvas.getContext("2d");
+
+var currentEntity=0;
+var currentEnemy;
+var current;
+var aEntity;
+var aEEntity;
+var cursor=[1,1];
+var debugItem="";
+var drawGrid=0;
+var entity = [
+["Entity 1",0,0,1,1,2,10,1,"entity",1,1,0,1,0,1,"Times New Roman",['Bat',0,'bat',1,0,0,0,0,0,20],['Gloves',1,'gloves',0,0,99,0,0,0,5],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+//0-friendly name,1-type,2-inventory,3-x,4-y,5-remaining moves,6-Health,7-Strength,8-texture,9-level,10-Speed,11-has moved,12-deployed,13-has attacked,14-Defence
+["Entity 2",0,0,2,4,20,10,1,"entity",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+
+
+];
+//0- current level/course id,1-xp,2-turns left, 3-mode
+var gameState=[0,0,5,0,20,20];
+
+
+//0-name,1-max turns,2-max players,3-mode,4-map ID,5-gridX,6-gridY,7-enemies,8-grid start x,9-grid start y
+var levels=[
+["Mammoth",5,2,0,0,20,20,[
+["Enemy 1",1,5,2,1,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 2",1,5,9,9,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 3",1,5,10,10,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 4",1,5,18,2,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 5",1,5,2,9,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]]
+],1,1],
+["City",8,2,0,1,20,20,[
+["Enemy 1",1,5,4,9,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 2",1,5,17,11,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 3",1,5,8,5,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]]
+]]
+];
+
+var map=[
+[],[]
+];//0-texture 1-iteractable 2-rotation 3-x 4-y
+
+
+loadLevel(0);
+
+
+function attackConfirm(i){
+setMode(3);
+currentEnemy=entity[i];
+
+//0-defence 1-Power 2-Evasion 3-Accuracy
+aEntity1=current[10]*3;
+aEEntity1=currentEnemy[10]*3;
+aEntity=[
+current[14]+current[17][5]+current[18][5],//Defence
+current[7]+current[16][3],//Power
+(current[10]*2)+20-current[17][9]+current[18][9],//Evasion
+75+aEntity1+10+current[16][6]];//Accuracy
+
+if(aEntity[0]<0) aEntity[0]=0;
+if(aEntity[1]<0) aEntity[1]=0;
+if(aEntity[2]<0) aEntity[2]=0;
+if(aEntity[3]<0) aEntity[3]=0;
+if(aEntity[4]>100) aEntity[3]=100;
+
+
+
+aEEntity=[
+currentEnemy[14]+currentEnemy[17][5]+currentEnemy[18][5],//Defence
+currentEnemy[7]+currentEnemy[16][3],//Power
+(currentEnemy[10]*2)+20-currentEnemy[17][9]+currentEnemy[18][9],//Evasion
+75+aEEntity1+10+currentEnemy[16][6]-aEntity[2]];//Accuracy
+aEntity[3]=aEntity[3]-aEEntity[2];//IF ENEMY EVASION DETERMINES ACURACY
+
+if(aEEntity[0]<0) aEEntity[0]=0;
+if(aEEntity[1]<0) aEEntity[1]=0;
+if(aEEntity[2]<0) aEEntity[2]=0;
+if(aEEntity[3]<0) aEEntity[3]=0;
+if(aEEntity[4]>100) aEEntity[3]=100;
+
+}
+
+
+function attack(){
+attacking:{
+while(current[6]>=1){
+while(currentEnemy[6]>=1){
+if(Math.floor((Math.random()*100)+0)<=aEntity[3]){
+var h=aEntity[1]-aEEntity[0]
+if(h<0)h=0;
+currentEnemy[6]-=h
+if(currentEnemy[6]<=0){
+alert("You win");
+currentEnemy[12]=0;
+setMode(0);
+break attacking;
+}
+//alert("you hit him");
+} //else alert("you missed him");
+if(Math.floor((Math.random()*100)+0)<=aEEntity[3]){
+var h=aEntity[1]-aEEntity[0]
+if(h<0)h=0;
+current[6]-=h
+if(current[6]<=0){
+alert("You Loose");
+current[12]=0;
+setMode(0);
+break attacking;
+}
+//alert("You got hit");
+} //else alert("he missed you");
+}
+}
+}
+}
+
+
+
+//LOAD LEVEL
+function loadLevel(x){
+for(i=0;i<entity.length;i++){
+if(entity[i][1]==1){
+entity.splice(i,1);
+}}
+gameState=[x,gameState[1],levels[x][1],0,levels[x][5],levels[x][6],levels[x][8],levels[x][9]];
+
+
+for(i=0;i<levels[gameState[0]][7].length;i++){
+entity.push([levels[gameState[0]][7][i][0],levels[gameState[0]][7][i][1],levels[gameState[0]][7][i][2],levels[gameState[0]][7][i][3],levels[gameState[0]][7][i][4],
+levels[gameState[0]][7][i][5],levels[gameState[0]][7][i][6],levels[gameState[0]][7][i][7],levels[gameState[0]][7][i][8],levels[gameState[0]][7][i][9],
+levels[gameState[0]][7][i][10],levels[gameState[0]][7][i][11],levels[gameState[0]][7][i][12],levels[gameState[0]][7][i][13],levels[gameState[0]][7][i][14],
+levels[gameState[0]][7][i][15],levels[gameState[0]][7][i][16],levels[gameState[0]][7][i][17],levels[gameState[0]][7][i][18]
+]);
+}
+}
+
+//NEW BACKGROUND
+function newB(x){
+if(x==""||x==null){
+map[levels[gameState[0]][4]].push([prompt('New Background\nTexture without .png'),0,0,cursor[0],cursor[1]]);
+} else {
+map[levels[gameState[0]][4]].push([x,0,0,cursor[0],cursor[1]]);
+}
+
+}
+
+
+
+function action(action){
+
+
+if(action=="end"){//PLAYER CHANGING
+setMode(0);
+gameState[2]--;
+
+for(i=0;i<entity.length;i++){
+if(entity[i][1]==0){
+entity[i][11]=0;}//reset has moved
+}
+for(i=0;i<entity.length;i++){
+if(entity[i][1]==0){
+entity[i][13]=0;}//reset has moved
+}
+
+
+}
+
+if(action=="rename"){
+i=prompt('Enter a new name for "'+entity[currentEntity][0]+'".',entity[currentEntity][0]);
+if(i!==null&&i!=="") entity[currentEntity][0] = i;
+}
+if(action=="newE"){
+var x=cursor[0];
+var y=cursor[1];
+entity.push([prompt('Name','NoName'),prompt('Type. "0" is Players, "1" is Enemy.','0'),0,x,y,prompt('How many places can move?','5'),10,prompt('Strength','1'),prompt('Texture without .png'),prompt('Level','1'),prompt('Class','1'),0,1,0,1]);
+}
+if(action=="newB"){
+newB('');
+}
+if(action=="editE"){
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+d=distance(cursor[0],cursor[1],entity[i][3],entity[i][4]);
+if(d==0){
+var x=cursor[0];
+var y=cursor[1];
+entity[i]=[prompt('Name',entity[i][0]),prompt('Type. "0" is Players, "1" is Enemy.',entity[i][1]),entity[i][2],entity[i][3],entity[i][4],prompt('How many places can move?',entity[i][5]),entity[i][6],prompt('Strength',entity[i][7]),prompt('Texture without .png',entity[i][8]),prompt('Level',entity[i][9]),prompt('Class',entity[i][10]),entity[i][11],entity[i][12],entity[i][13],entity[i][14]];
+}}}}
+if(action=="editB"){
+for(i=0;i<map[levels[gameState[0]][4]].length;i++){
+d=distance(cursor[0],cursor[1],map[levels[gameState[0]][4]][i][3],map[levels[gameState[0]][4]][i][4]);
+if(d==0){
+map[levels[gameState[0]][4]][i]=[prompt('Texture',map[levels[gameState[0]][4]][i][0]),prompt('Interactable',map[levels[gameState[0]][4]][i][1]),prompt('Rotation. \n 0=0, 1=90, 2=180, 3=270',map[levels[gameState[0]][4]][i][2])];
+}}}
+if(action=="rotateB"){
+for(i=0;i<map[levels[gameState[0]][4]].length;i++){
+d=distance(cursor[0],cursor[1],map[levels[gameState[0]][4]][i][3],map[levels[gameState[0]][4]][i][4]);
+if(d==0){
+var x;
+var y=map[levels[gameState[0]][4]][i][2];
+if(map[levels[gameState[0]][4]][i][2]==3) x=0;
+else x=++y;
+map[levels[gameState[0]][4]][i]=[map[levels[gameState[0]][4]][i][0],map[levels[gameState[0]][4]][i][1],x,map[levels[gameState[0]][4]][i][3],map[levels[gameState[0]][4]][i][4]];
+}}}
+if(action=="delE"){
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+d=distance(cursor[0],cursor[1],entity[i][3],entity[i][4]);
+if(d==0){
+entity[i]="";
+}}}}
+if(action=="delB"){
+for(i=0;i<map[levels[gameState[0]][4]].length;i++){
+d=distance(cursor[0],cursor[1],[levels[gameState[0]][4]][i][3],map[levels[gameState[0]][4]][i][4]);
+if(d==0){
+map[levels[gameState[0]][4]][i]="";
+}}}
+if(action=="select"){
+if(gameState[3]==0){
+//Change to selected entity
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+if(entity[i][3]==cursor[0] && entity[i][4]==cursor[1]){
+setMode(4);
+}
+}
+}
+}
+if(gameState[3]==1){
+
+var d=distance(cursor[0],cursor[1],entity[currentEntity][3],entity[currentEntity][4]);
+if(d<=entity[currentEntity][5]&&d!=0){
+
+var intheway=0;
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+if(entity[i][3]==cursor[0]&&entity[i][4]==cursor[1]){
+intheway=1;
+alert(entity[i][0]+" is already here!");
+}
+}
+}
+if(intheway==0){
+entity[currentEntity][3]=cursor[0];
+entity[currentEntity][4]=cursor[1];
+setMode(0);
+entity[currentEntity][11]=1;
+gameState[1]++;
+}
+}
+
+
+
+
+}
+if(gameState[3]==2){
+
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+if(entity[i][1]==1){
+if(cursor[0]==entity[i][3]&&cursor[1]==entity[i][4]){
+attackConfirm(i);
+}
+}
+}
+}
+
+}
+if(gameState[3]==3){
+if(distance(cursor[0],cursor[1],9,7)==0||distance(cursor[0],cursor[1],10,7)==0||distance(cursor[0],cursor[1],11,7)==0||distance(cursor[0],cursor[1],12,7)==0){
+attack();
+}
+if(distance(cursor[0],cursor[1],9,9)==0||distance(cursor[0],cursor[1],10,9)==0||distance(cursor[0],cursor[1],11,9)==0){
+setMode(0);
+}
+}
+
+
+}
+
+if(action=="attack"){
+//CHANGE TO THAT ENTITY
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+if(entity[i][3]==cursor[0] && entity[i][4]==cursor[1]){
+currentEntity=i;
+}}}
+if(entity[currentEntity][1]==0){
+var u=0;
+for(i=0;i<entity.length;i++){
+if(entity[i][1]==1){
+if(entity[i][12]==1){
+var d=distance(entity[currentEntity][3],entity[currentEntity][4],entity[i][3],entity[i][4]);
+if(d==1){
+u++;
+}}}}
+if (u==1){
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+if(entity[i][1]==1){
+var d=distance(entity[currentEntity][3],entity[currentEntity][4],entity[i][3],entity[i][4]);
+if(d==1){
+attackConfirm(i);
+}}}}}
+else if(u>1){
+setMode(2);
+alert("Please select an enemy to attack.");
+} else alert("You must be next to an enemy to attack.");
+} else alert("You do not control "+entity[currentEntity][0]+". So you cannot attack with it.");
+}
+if(action=="moveMode"){
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+if(entity[i][3]==cursor[0] && entity[i][4]==cursor[1]){
+currentEntity=i;
+}}}
+if(entity[currentEntity][1]==0){
+if(entity[currentEntity][11]==0){
+if(gameState[3]==1) setMode(0);
+else setMode(1);
+} else alert("You already moved "+entity[currentEntity][0]+" this turn.");
+} else alert(entity[currentEntity][0]+" is an enemy so you can't move it.");
+}
+if(action=="debugDistance"){
+if(debugItem != "distance") debugItem="distance";
+else debugItem="";
+}
+if(action=="debugCords"){
+if(debugItem != "cords") debugItem="cords";
+else debugItem="";
+}
+if(action=="debugDrawGrid"){
+if(drawGrid==1)drawGrid=0;
+else drawGrid=1;
+}
+if(action=="save"){
+name=prompt("Enter a save name");
+if(name!==""){
+fullSave=[gameState,map,levels,entity];
+var saveEntityJson = JSON.stringify(fullSave);
+document.saveForm.name.value = name;
+document.saveForm.saveEntity.value = saveEntityJson;
+document.saveForm.action.value = "save";
+document.forms["saveForm"].submit();
+}
+}
+if(action=="load"){
+name=prompt("What is the name of your save?");
+if(name!==""){
+document.saveForm.name.value = name;
+document.saveForm.action.value = "load";
+document.forms["saveForm"].submit();
+}
+}
+if(action=="delete"){
+name=prompt("What is the name of the save you wish to delete?");
+if(name!==""){
+document.saveForm.name.value = name;
+document.saveForm.action.value = "delete";
+document.forms["saveForm"].submit();
+}
+}
+if(action=="debugListSaves"){
+document.saveForm.action.value = "list";
+document.forms["saveForm"].submit();
+}
+if(action=="saveOffline"){
+alert("The text at the bottom of the page is your save. Copy and paste it into a file for safe keeping.");
+fullSave=[gameState,map,levels,entity];
+document.getElementById('saveOfflineResult').innerHTML = JSON.stringify(fullSave);
+}
+if(action=="loadOffline"){
+var i = JSON.parse(prompt("Paste your save here."));
+if(i!==""&&i!==null){
+gameState=i[0];
+map=i[1];
+levels=i[2];
+entity=i[3];
+}
+}
+if(action=="loadLevel"){
+var x=prompt("What Level ID do you want to load?","0");
+loadLevel(x);
+
+}
+
+
+
+
+
+}
+
+
+function equip(i){
+
+alert("Equipping "+i);
+
+
+}
+
+
+
+function change(i){
+currentEntity=i;
+}
+function setMode(i){
+gameState[3]=i;
+if(i==3){
+
+}
+if(i==0){
+
+}
+}
+function distance(x1,y1,x2,y2){
+var dy=x1-x2;
+var dx=y1-y2;
+dy=Math.abs(dy);
+dx=Math.abs(dx);
+var d=dy+dx;
+return d;
+}
+
+
+
+//Move Cursor
+function moveCursor(x){
+
+if(x=="right"&&(cursor[0]!=30)){cursor[0]++;}
+else if(x=="left"&&cursor[0]!=1){cursor[0]--;}
+else if(x=="up"&&cursor[1]!=1){cursor[1]--;}
+else if(x=="down"&&cursor[1]!=20){cursor[1]++;}
+}
+
+
+
+var fps = 20;
+function changeFps(){
+var i = document.getElementById('fps');
+fps = i.options[i.selectedIndex].value;
+}
+
+
+//START GAME CLOCK
+setInterval(function(){
+
+current=entity[currentEntity];
+//CUSOR OVER CHANGES TO ENTITY
+if(gameState[3]==0){
+for(i=0;i<entity.length;i++){
+if(entity[i][12]==1){
+if(entity[i][3]==cursor[0] && entity[i][4]==cursor[1]){
+currentEntity=i;
+}}}}
+
+
+//DEBUG VALUES
+document.getElementById('debugEntityAmount').innerHTML = entity.length;
+document.getElementById('debugCurrentFps').innerHTML = fps;
+document.getElementById('debugMode').innerHTML = gameState[3];
+
+
+
+canvas.width = canvas.width;
+draw(canvas);
+},fps);
+
+
+
+</script>
+	<td>
+		<table>
+			<tr>
+				<td>
+					<table id="panel">
+						<tr>
+							<td>
+								<button id="save" onclick="action('save');">Save Online</button>
+								<button id="load" onclick="action('load');">Load Online</button><br>
+								<button id="saveOffline" onclick="action('saveOffline');">Save Manually</button>
+								<button id="loadOffline" onclick="action('loadOffline');">Load Manually</button>
+								
+								<form id="saveForm" name="saveForm" method="post" action="save.php">
+								<input type="hidden" name="saveEntity" id="saveEntity" value="">
+								<input type="hidden" name="name" id="name" value="">
+								<input type="hidden" name="action" id="action" value="">
+								</form>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>
+		<table >
+			<tr>
+				<td id="panel">
+					<h1>Debug</h1><hr>
+					Entity #: <b id="debugEntityAmount">?</b>, 
+					Mode: <b id="debugMode">?</b><br>
+					ms/f: <b id="debugCurrentFps">?</b>, 
+					FPS:<select id="fps" onchange="changeFps()"><option value="60">16</option><option value="50">20</option><option value="40">25</option><option value="30">33</option><option value="20" selected="selected">50</option><option value="10">100</option></select><br>
+					<button id="loadLevel" onclick="action('loadLevel');">Load Level</button><br>
+
+					Toggle:
+					<button id="debugDrawGrid" onclick="action('debugDrawGrid');">Grid</button>
+					<button id="debugDistance" onclick="action('debugDistance');">Distances</button>
+					<button id="debugCords" onclick="action('debugCords');">Coordinates</button><br>
+					Entity:
+					<button id="newE" onclick="action('newE');">Add</button>
+					<button id="editE" onclick="action('editE');">Edit</button>
+					<button id="rename" onclick="action('rename');">Rename</button>
+					<button id="delE" onclick="action('delE');">Delete</button><br>
+					Background:
+					<button id="newB" onclick="action('newB');">Add</button>
+					<button id="editB" onclick="action('editB');">Edit</button>
+					<button id="rotateB" onclick="action('rotateB');">Rotate</button>
+					<button id="delB" onclick="action('delB');">Delete</button><br>
+
+					Mode:
+					<button id="debugSetMode0" onclick="setMode(0);">0</button>
+					<button id="debugSetMode1" onclick="setMode(1);">1</button>
+					<button id="debugSetMode2" onclick="setMode(2);">2</button>
+					<button id="debugSetMode3" onclick="setMode(3);">3</button><br>
+
+					<button id="debugListSaves" onclick="action('debugListSaves');">List Online Saves</button>
+					<button id="delete" onclick="action('delete');">Delete Online Save</button>
+				</td>
+				<td id="panel">
+				<h7>Click any texture to add it to map.</h7><hr>
+					<img id="textRoad" onclick="newB('road');" src="images/road.png">
+					<img id="textRoadCross" onclick="newB('roadCross');" src="images/roadCross.png">
+					<img id="textThreeRoad" onclick="newB('threeRoad');" src="images/threeRoad.png">
+					<img id="textCrossRoad" onclick="newB('crossroad');" src="images/crossroad.png">
+					<img id="textRoadTurn" onclick="newB('roadTurn');" src="images/roadTurn.png">
+					<img id="textconcrete" onclick="newB('concrete');" src="images/concrete.png">
+					<img id="textsidewalk" onclick="newB('sidewalk');" src="images/sidewalk.png">
+					<img id="textsidewalkGrass" onclick="newB('sidewalkGrass');" src="images/sidewalkGrass.png">
+					<img id="textsidewalkEdge" onclick="newB('sidewalkEdge');" src="images/sidewalkEdge.png">
+					<img id="textGrass" onclick="newB('grass');" src="images/grass.png">
+				</td>
+			</tr>
+		</table>
+	</td>
+	<td style="text-align:left;">
+		<b>Keyboard Controls:</b><br>
+		Arrow keys - Move Crosshair<br>
+		Enter - Select<br>
+		M - Move Selected Entity<br>
+		A - Attack with Selected Entity<br>
+		END - End Turn<br>
+		ESC - CANCEL CURRENT ACTION<hr>
+		<b>Debug:</b><br>
+		Shift+E - Add Entity<br>
+		Shift+B - Add Background<br>
+		Shift+R - Rotate Background<br>
+		Ctrl+Shift+E - Delete Entity<br>
+		Ctrl+Shift+B - Delete Background<br>
+		Shift+C - Toggle Coordinates<br>
+		Shift+D - Toggle Distances<br>
+	</td>
+</tr>
+</table>
+<br><br><br>
+<b id="saveOfflineResult"></b>
+<br>
+<br>
+</body>
+<footer>
+All code &#169; Bryce Meyer<br>
+All textures &#169; Jonathan Rivas<br>
+All story, characters and ideas are intellectual property of Jonathan Rivas<br><br>
+You may not reproduce, duplicate, copy, sell, resell or exploit for any purpose, any portion of this web site<br>
+</footer>
+</html>
