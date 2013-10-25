@@ -13,13 +13,14 @@ body {
 #panel{
   background: #ffffff;
   border: 2px solid #000000;
-  padding: 10px;
+  padding: 5px;
   vertical-align:top;
+  width:300px;
 }
 #panel1{
   background: #ffffff;
   border: 2px solid #000000;
-  padding: 10px;
+  padding: 5px;
   vertical-align:top;
-  width:400px;
+  width:300px;
 }

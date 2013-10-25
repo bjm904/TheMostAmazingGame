@@ -58,7 +58,6 @@ jQuery(document).bind('keydown.esc',function (evt){action('esc');});
 
 
 jQuery(document).bind('keydown.shift_e',function (evt){action('newE');});
-jQuery(document).bind('keydown.shift_b',function (evt){action('newB');});
 jQuery(document).bind('keydown.shift_r',function (evt){action('rotateB');});
 jQuery(document).bind('keydown.shift_d',function (evt){action('debugDistance');});
 jQuery(document).bind('keydown.shift_c',function (evt){action('debugCords');});
@@ -999,17 +998,22 @@ document.saveForm.action.value = "list";
 document.forms["saveForm"].submit();
 }
 if(action=="saveOffline"){
-alert("The text at the bottom of the page is your save. Copy and paste it into a file for safe keeping.");
+alert("The text in the box is your save. Copy and paste it into a file for safe keeping.");
 fullSave=[gameState,map,levels,entity];
-document.getElementById('saveOfflineResult').innerHTML = JSON.stringify(fullSave);
+document.getElementById('saveOfflineResult').value = JSON.stringify(fullSave);
+document.getElementById('saveOfflineResult').select();
 }
 if(action=="loadOffline"){
-var i = JSON.parse(prompt("Paste your save here."));
+var x = document.getElementById('saveOfflineResult').value;
+if(x==""||x==null) alert("Paste your save in the box to the left and try again.");
+else {
+var i = JSON.parse(x);
 if(i!==""&&i!==null){
 gameState=i[0];
 map=i[1];
 levels=i[2];
 entity=i[3];
+}
 }
 }
 if(action=="loadLevel"){
@@ -1162,95 +1166,82 @@ draw(canvas);
 
 }//End Browser Check
 </script>
-	<td>
-		<table>
-			<tr>
-				<td>
-					<table id="panel">
-						<tr>
-							<td>
-								<button id="save" onclick="action('save');">Save Online</button><br>
-								<button id="load" onclick="action('load');">Load Online</button><br>
-								<button id="saveOffline" onclick="action('saveOffline');">Save Manually</button><br>
-								<button id="loadOffline" onclick="action('loadOffline');">Load Manually</button>
-								
-								<form id="saveForm" name="saveForm" method="post" action="http://thefourthdimensi0n.com/game/game/save.php">
-								<input type="hidden" name="saveEntity" id="saveEntity" value="">
-								<input type="hidden" name="name" id="name" value="">
-								<input type="hidden" name="action" id="action" value="">
-								</form>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</td>
 </tr>
-<tr>
-	<td>
-		<table >
-			<tr>
-				<td id="panel">
-					<h1>Debug</h1><hr>
-					Mode: <b id="debugMode">?</b><br>
-					ms/f: <b id="debugCurrentFps">?</b>, 
-					FPS:<select id="fps" onchange="changeFps()"><option value="60">16</option><option value="50">20</option><option value="40">25</option><option value="30">33</option><option value="20" selected="selected">50</option><option value="10">100</option></select><br>
-					<button id="loadLevel" onclick="action('loadLevel');">Load Level</button><br>
+</table>
+<table>
+	<tr>
+		<td id="panel">
+			<h1>Debug</h1><hr>
+			Mode: <b id="debugMode">?</b><br>
+			ms/f: <b id="debugCurrentFps">?</b>, 
+			FPS:<select id="fps" onchange="changeFps()"><option value="60">16</option><option value="50">20</option><option value="40">25</option><option value="30">33</option><option value="20" selected="selected">50</option><option value="10">100</option></select><br>
+			<button id="loadLevel" onclick="action('loadLevel');">Load Level</button><br>
 
-					Toggle:
-					<button id="debugDrawGrid" onclick="action('debugDrawGrid');">Grid</button>
-					<button id="debugDistance" onclick="action('debugDistance');">Distances</button>
-					<button id="debugCords" onclick="action('debugCords');">Coordinates</button><br>
-					Entity:
-					<button id="newE" onclick="action('newE');">Add</button>
-					<button id="editE" onclick="action('editE');">Edit</button>
-					<button id="rename" onclick="action('rename');">Rename</button>
-					<button id="delE" onclick="action('delE');">Delete</button><br>
-					Background:
-					<button id="newB" onclick="action('newB');">Add</button>
-					<button id="editB" onclick="action('editB');">Edit</button>
-					<button id="rotateB" onclick="action('rotateB');">Rotate</button>
-					<button id="delB" onclick="action('delB');">Delete</button><br>
+			Toggle:
+			<button id="debugDrawGrid" onclick="action('debugDrawGrid');">Grid</button>
+			<button id="debugDistance" onclick="action('debugDistance');">Distances</button>
+			<button id="debugCords" onclick="action('debugCords');">Coordinates</button><br>
+			Entity:
+			<button id="newE" onclick="action('newE');">Add</button>
+			<button id="editE" onclick="action('editE');">Edit</button>
+			<button id="rename" onclick="action('rename');">Rename</button>
+			<button id="delE" onclick="action('delE');">Delete</button><br>
+			Background:
+			<button id="newB" onclick="action('newB');">Add</button>
+			<button id="editB" onclick="action('editB');">Edit</button>
+			<button id="rotateB" onclick="action('rotateB');">Rotate</button>
+			<button id="delB" onclick="action('delB');">Delete</button><br>
 
-					<button id="debugListSaves" onclick="action('debugListSaves');">List Online Saves</button>
-					<button id="delete" onclick="action('delete');">Delete Online Save</button>
-				</td>
-				<td id="panel1">
-					<h7>Click any texture to add it to map.</h7><hr>
-					<script>
-					for(i=0;i<allImg.length;i++){
-					var onclick="newB('"+allImg[i]+"')";
-					document.write("<img id='"+allImg[i]+"' onclick="+onclick+" src="+window["img"+allImg[i]].src+" width='30px' height='30px' >");
-					}
-					</script>
-				</td>
-			</tr>
-		</table>
-	</td>
+			<button id="debugListSaves" onclick="action('debugListSaves');">List Online Saves</button>
+			<button id="delete" onclick="action('delete');">Delete Online Save</button>
+		</td>
+		<td id="panel1">
+			<h7>Click any texture to add it to map.</h7><hr>
+			<script>
+			for(i=0;i<allImg.length;i++){
+			var onclick="newB('"+allImg[i]+"')";
+			document.write("<img id='"+allImg[i]+"' onclick="+onclick+" src="+window["img"+allImg[i]].src+" width='30px' height='30px' >");
+			}
+			</script>
+		</td>
 	<td style="text-align:left;">
-		<b>Keyboard Controls:</b><br>
+		<b>Keyboard Controls:</b><hr>
 		Arrow keys - Move Crosshair<br>
 		Enter - Select<br>
 		M - Move Selected Entity<br>
 		A - Attack with Selected Entity<br>
 		END - End Turn<br>
-		ESC - CANCEL CURRENT ACTION<hr>
-		<b>Debug:</b><br>
+		ESC - Cancel
+	</td>
+	<td style="text-align:left;">
+		<b>Debug:</b><hr>
 		Shift+E - Add Entity<br>
-		Shift+B - Add Background<br>
 		Shift+R - Rotate Background<br>
-		Ctrl+Shift+E - Delete Entity<br>
-		Ctrl+Shift+B - Delete Background<br>
+		Del+E - Delete Entity<br>
+		Del+B - Delete Background<br>
 		Shift+C - Toggle Coordinates<br>
-		Shift+D - Toggle Distances<br>
+		Shift+D - Toggle Distances
 	</td>
 </tr>
+<tr>
+	<td>
+		<textarea rows="5" cols="40" id="saveOfflineResult"></textarea>
+	</td>
+	<td id="panel1">
+		<button id="loadOffline" onclick="action('loadOffline');">Load Manually</button>
+		<button id="load" onclick="action('load');">Load Online</button><br>
+		<button id="saveOffline" onclick="action('saveOffline');">Save Manually</button>
+		<button id="save" onclick="action('save');">Save Online</button>
+		
+		<form id="saveForm" name="saveForm" method="post" action="http://thefourthdimensi0n.com/game/game/save.php">
+		<input type="hidden" name="saveEntity" id="saveEntity" value="">
+		<input type="hidden" name="name" id="name" value="">
+		<input type="hidden" name="action" id="action" value="">
+		</form>
+	</td>
+	<td></td>
+</tr>
 </table>
-<br><br><br>
-<b id="saveOfflineResult"></b>
-<br>
-<br>
 </body>
 <footer>
 All code &#169; Bryce Meyer<br>
