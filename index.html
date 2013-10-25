@@ -540,6 +540,7 @@ context.fillText("CANCEL",282,295);
 }
 //SELECT ENTITIES TO DEPLOY
 if(gameState[3]==6){
+//grey background
 context.globalAlpha=0.7;
 context.fillStyle="#000000";
 context.fillRect(30,30,600,600);
@@ -562,8 +563,9 @@ context.stroke();
 context.fillStyle="#000000";
 context.font="13px Arial";
 context.fillText("Done",x+6,y+15);
-
+var p=0;
 for(i=0;i<entity.length;i++){
+if(entity[i][1]==0&&entity[i][12]==1) p++;
 if(entity[i][1]==0&&entity[i][12]==0){
 deployEntity.push(i);
 //draw entity info
@@ -631,9 +633,22 @@ context.stroke();
 context.fillStyle="#000000";
 context.font="13px Arial";
 context.fillText("Deploy",x+74,y+111);
+}}
 
+//deploys remaining
+context.fillStyle="#ffffff";
+context.fillRect(120,490,270,35);
+context.beginPath();
+context.rect(120,490,270,35);
+context.stroke();
+var o=levels[gameState[0]][2]-p;
+context.font="25px Arial";
+context.fillStyle="#000000";
+context.fillText("Deploys Remaining: ",125,515);
+context.fillText(o,360,515);
+if(o==0) setMode(0);
+}
 
-}}}
 function debug(item){
 if(item=="distance"){
 for(i=1;i<21;i++){
@@ -703,7 +718,7 @@ var gameState=[0,0,5,0,20,20];
 
 //0-name,1-max turns,2-max players,3-mode,4-map ID,5-gridX,6-gridY,7-enemies,8-grid start x,9-grid start y
 var levels=[
-["Mammoth",5,2,0,0,20,20,[
+["Mammoth",5,4,0,0,20,20,[
 ["Enemy 1",1,5,2,1,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 ["Enemy 2",1,5,9,9,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 ["Enemy 3",1,5,10,10,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
