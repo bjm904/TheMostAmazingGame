@@ -736,7 +736,7 @@ var map=[
 
 
 loadLevel(0);//Load enemy entities
-setMode(6);
+
 
 function attackConfirm(i){
 setMode(3);
@@ -781,12 +781,12 @@ if(aEEntity[4]>100) aEEntity[3]=100;
 
 //LOAD LEVEL
 function loadLevel(x){
-for(i=0;i<entity.length;i++){//Remove all previous entities
+for(i=0;i<entity.length;i++){//Remove all previous enemies
+entity[i][12]=0;
 if(entity[i][1]==1){
 entity.splice(i,1);
 }}
 gameState=[x,gameState[1],levels[x][1],0,levels[x][5],levels[x][6],levels[x][8],levels[x][9]];
-
 
 for(i=0;i<levels[gameState[0]][7].length;i++){
 entity.push([levels[gameState[0]][7][i][0],levels[gameState[0]][7][i][1],levels[gameState[0]][7][i][2],levels[gameState[0]][7][i][3],levels[gameState[0]][7][i][4],
@@ -795,6 +795,7 @@ levels[gameState[0]][7][i][10],levels[gameState[0]][7][i][11],levels[gameState[0
 levels[gameState[0]][7][i][15],levels[gameState[0]][7][i][16],levels[gameState[0]][7][i][17],levels[gameState[0]][7][i][18]
 ]);
 }
+setMode(6);
 }
 
 //NEW BACKGROUND
@@ -821,8 +822,13 @@ setMode(0);
 }
 
 if(action=="end"){//PLAYER CHANGING
-setMode(0);
 gameState[2]--;
+if(gameState[2]<=0){
+loadLevel(gameState[0]);
+alert("You ran out of turns.\nRestartting Level...");
+}
+setMode(0);
+
 
 for(i=0;i<entity.length;i++){
 if(entity[i][1]==0){
@@ -1193,7 +1199,6 @@ if(entity[i][1]==0&&entity[i][12]==1) u++;
 if(u==0){
 alert("You have no players remaining on the feild.\nRestartting level...");
 loadLevel(gameState[0]);
-setMode(6);//Display entity deployment screen
 }
 }
 
