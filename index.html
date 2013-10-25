@@ -175,7 +175,6 @@ context.stroke();
 }
 
 //BACKGROUND
-if(gameState[3]!=4){
 context.globalAlpha=1;
 for(i=0;i<map[levels[gameState[0]][4]].length;i++){
 var r = map[levels[gameState[0]][4]][i][2];
@@ -192,7 +191,6 @@ bcontext.rotate(o);
 var img=window["img"+map[levels[gameState[0]][4]][i][0]];
 bcontext.drawImage(img,0,0);
 context.drawImage(buffer,map[levels[gameState[0]][4]][i][3]*30,map[levels[gameState[0]][4]][i][4]*30);
-}
 }
 //MOVEABLE AREA
 if(gameState[3]==1){
@@ -996,7 +994,7 @@ if(entity[currentEntity][11]==0){
 if(gameState[3]==1) setMode(0);
 else setMode(1);
 } else alert("You already moved "+entity[currentEntity][0]+" this turn.");
-} else alert(entity[currentEntity][0]+" is an enemy so you can't move it.");
+} else alert("You do not control "+entity[currentEntity][0]+". So you cannot move it.");
 }
 if(action=="debugDistance"){
 if(debugItem != "distance") debugItem="distance";
@@ -1193,7 +1191,7 @@ for(i=0;i<entity.length;i++){
 if(entity[i][1]==0&&entity[i][12]==1) u++;
 }
 if(u==0){
-alert("All be dead!\nRestartting level...");
+alert("You have no players remaining on the feild.\nRestartting level...");
 loadLevel(gameState[0]);
 setMode(6);//Display entity deployment screen
 }
