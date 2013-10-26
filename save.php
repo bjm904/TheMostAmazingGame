@@ -1,4 +1,32 @@
 <h1>Saving / Loading </h1>
+<!--
+IF EXISTS(SELECT * FROM saves WHERE name='$_POST[name]')<br>
+
+----------------
+
+IF EXISTS(SELECT * FROM saves WHERE name='test')
+BEGIN
+    UPDATE saves SET entity='changed' WHERE name='test'
+END
+ELSE
+BEGIN
+    INSERT INTO saves (`name`, `ID`, `entity`)
+	VALUES ('test', NULL, 'new')
+END
+
+-----------------
+
+IF (SELECT COUNT(*) FROM saves
+WHERE name='test') > 0
+BEGIN
+    UPDATE saves SET entity='changed' WHERE name='test'
+END
+ELSE
+BEGIN
+    INSERT INTO saves (`name`, `ID`, `entity`)
+	VALUES ('test', NULL, 'new')
+END
+-->
 <?php
 $con=mysqli_connect("localhost","root","Bjm9042481875","game");
 // Check connection
@@ -7,7 +35,9 @@ if (mysqli_connect_errno())
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
   }
 if($_POST['action']=="save"){
-mysqli_query($con,"INSERT INTO `game`.`saves` (`name`, `ID`, `entity`) VALUES ('$_POST[name]', NULL, '$_POST[saveEntity]');");
+mysqli_query($con,"
+INSERT INTO saves (`name`, `entity`) VALUES ('$_POST[name]', '$_POST[saveEntity]')
+ON DUPLICATE KEY UPDATE entity='$_POST[saveEntity]'");
 echo "Saved as '";
 echo $_POST['name'];
 echo "'";
@@ -22,7 +52,7 @@ echo "Copy the following. Back at the game click 'Load Manually' and paste there
 while($row = mysqli_fetch_array($result))
   {
   echo $row['entity'];
-  echo "<br>";
+  echo "<hr>";
   }
   echo "<br><hr>";
 }
@@ -37,7 +67,7 @@ $result = mysqli_query($con,"SELECT * FROM saves");
 while($row = mysqli_fetch_array($result))
   {
   echo $row['name'] . " --- " . $row['entity'];
-  echo "<br>";
+  echo "<hr>";
   }
 }
 else{
