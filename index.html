@@ -77,7 +77,7 @@ window.addEventListener("keydown", function(e) {
 
 var allImg=["bat","concrete","crossroad","entity","fillerLower","fillerUpper",
 "fillerWeapon","gloves","grass","heart","missing0","missing1","road","roadCross",
-"roadTurn","sidewalk","sidewalkEdge","sidewalkGrass","threeRoad"]
+"roadTurn","sidewalk","sidewalkEdge","sidewalkGrass","threeRoad","enemy"]
 for(i=0;i<allImg.length;i++){
 window["img"+allImg[i]]=new Image();
 window["img"+allImg[i]].src="images/"+allImg[i]+".png";
@@ -685,16 +685,16 @@ var gameState=[0,0,5,0,20,20];
 //0-name,1-max turns,2-max players,3-mode,4-map ID,5-gridX,6-gridY,7-enemies,8-grid start x,9-grid start y
 var levels=[
 ["Mammoth",5,4,0,0,20,20,[
-["Enemy 1",1,5,2,1,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
-["Enemy 2",1,5,9,9,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
-["Enemy 3",1,5,10,10,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
-["Enemy 4",1,5,18,2,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
-["Enemy 5",1,5,2,9,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]]
+["Enemy 1",1,5,2,1,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 2",1,5,9,9,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 3",1,5,10,10,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 4",1,5,18,2,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 5",1,5,2,9,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]]
 ],1,1],
 ["City",8,2,0,1,20,20,[
-["Enemy 1",1,5,4,9,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
-["Enemy 2",1,5,17,11,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
-["Enemy 3",1,5,8,5,5,10,1,"",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]]
+["Enemy 1",1,5,4,9,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 2",1,5,17,11,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 3",1,5,8,5,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]]
 ]]
 ];
 
@@ -846,9 +846,9 @@ entity[i]="";
 }}}}
 if(action=="delB"){
 for(i=0;i<map[levels[gameState[0]][4]].length;i++){
-d=distance(cursor[0],cursor[1],[levels[gameState[0]][4]][i][3],map[levels[gameState[0]][4]][i][4]);
+d=distance(cursor[0],cursor[1],map[levels[gameState[0]][4]][i][3],map[levels[gameState[0]][4]][i][4]);
 if(d==0){
-map[levels[gameState[0]][4]][i]="";
+map[levels[gameState[0]][4]].splice(i,1);
 }}}
 if(action=="select"){
 if(gameState[3]==0){
