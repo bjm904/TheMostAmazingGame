@@ -763,6 +763,7 @@ setMode(7);
 }
 
 function attackConfirm(i){
+if(gameState[3]==0){
 setMode(3);
 currentEnemy=entity[i];
 
@@ -793,6 +794,7 @@ if(aEEntity[1]<0) aEEntity[1]=0;
 if(aEEntity[2]<0) aEEntity[2]=0;
 if(aEEntity[3]<0) aEEntity[3]=0;
 if(aEEntity[4]>100) aEEntity[3]=100;
+}else alert("Please finish what you are doing before attacking.");
 }
 //LOAD LEVEL
 function loadLevel(x){
@@ -828,7 +830,8 @@ map[levels[gameState[0]][4]].push([x,0,0,cursor[0],cursor[1]]);
 function action(action){
 
 if(action=="esc"){
-if(gameState[3]!=5){//Not allowed to cancel a battle
+if(gameState[3]==7) action="select";
+else if(gameState[3]!=5){//Not allowed to cancel a battle
 setMode(0);
 }
 }
