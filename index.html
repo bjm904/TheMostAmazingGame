@@ -271,7 +271,7 @@ var img=window["imgheart"];
 context.drawImage(img,x+2+(9*u),y+22,9,9);
 }}}}}
 //DRAW EPANDED INFO BOXES FOR ENTITIES
-if(gameState[3]==4){
+if(gameState[3]==4||gameState[3]==8){
 var x,y;
 var w=150;//Info box width and hight
 var h=150;
@@ -340,13 +340,22 @@ context.drawImage(img,x+90,y+90,30,30);
 for(u=0;u<entity[currentEntity][6];u++){//hearts
 var img=window["imgheart"];
 context.drawImage(img,x+2+(9*u),y+22,9,9);
+}}
+
+if(gameState[3]==8){
+//FADE BACKGROUND
+context.globalAlpha=0.2;
+context.fillStyle="#000000";
+context.fillRect(30,30,600,600);
+context.globalAlpha=1;
+
 }
-}
+
 if(gameState[3]==3||gameState[3]==5){
 //FADE BACKGROUND
 context.globalAlpha=0.2;
 context.fillStyle="#000000";
-context.fillRect(35,60,570,340);
+context.fillRect(30,30,600,600);
 
 context.globalAlpha=1;
 //DRAW INFO BOXES
@@ -903,9 +912,9 @@ if(current[3]<=10&&current[4]<=10){x=current[3]+1; y=current[4]+1;}//upper left
 if(current[3]>10&&current[4]<=10){ x=current[3]-5; y=current[4]+1;}//upper right
 if(current[3]<=10&&current[4]>10){ x=current[3]+1; y=current[4]-5;}//lower left
 if(current[3]>10&&current[4]>10){ x=current[3]-5; y=current[4]-5;}//lower right
-if(cursor[0]==x+3&&cursor[1]==y+1) alert("Weapon");
-if(cursor[0]==x+3&&cursor[1]==y+2) alert("Upper");
-if(cursor[0]==x+3&&cursor[1]==y+3) alert("Lower");
+if(cursor[0]==x+3&&cursor[1]==y+1){setMode(8); equipSel=0;}
+if(cursor[0]==x+3&&cursor[1]==y+2){setMode(8); equipSel=1;}
+if(cursor[0]==x+3&&cursor[1]==y+3){setMode(8); equipSel=2;}
 if(cursor[0]>x+4||cursor[0]<x||cursor[1]>y+4||cursor[1]<y) setMode(0);//Close if select outside box
 }
 else if(gameState[3]==6){
