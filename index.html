@@ -368,18 +368,18 @@ var img=window["img"+current[equi][2]];
 context.drawImage(img,x+90,y+30+(equipSel*30),30,30);
 
 
-var my_gradient=context.createLinearGradient(x+130,y+125,x+130,y+125+20);
+var my_gradient=context.createLinearGradient(x+130,y+125,x+130,y+125+20+(equipSel*30));
 my_gradient.addColorStop(0,"#5E5E5E");
 my_gradient.addColorStop(1,"green");
 
 context.fillStyle=my_gradient;
-context.fillRect(x+130,y+125,45,20);
+context.fillRect(x+130,y+125+(equipSel*30),45,20);
 context.beginPath();
-context.rect(x+130,y+125,45,20);
+context.rect(x+130,y+125+(equipSel*30),45,20);
 context.stroke();
 context.fillStyle="#000000";
 context.font="12px Arial";
-context.fillText("Equip",x+130+5,y+125+15);
+context.fillText("Equip",x+130+5,y+125+15+(equipSel*30));
 }
 
 if(gameState[3]==3||gameState[3]==5){
