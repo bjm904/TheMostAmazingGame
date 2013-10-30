@@ -342,23 +342,54 @@ var img=window["imgheart"];
 context.drawImage(img,x+2+(9*u),y+22,9,9);
 }}
 
+//EQUIPMENT SELECTION
 if(gameState[3]==8){
-//FADE BACKGROUND
+//Fade Background
 context.globalAlpha=0.2;
 context.fillStyle="#000000";
 context.fillRect(30,30,600,600);
 context.globalAlpha=1;
 
+var x,y;
+var w=150;//Info box width and hight
+var h=150;
+if(current[3]<=10&&current[4]<=10){x=current[3]*30+30; y=current[4]*30+30;}//upper left
+if(current[3]>10&&current[4]<=10){ x=current[3]*30-w; y=current[4]*30+30;}//upper right
+if(current[3]<=10&&current[4]>10){ x=current[3]*30+30; y=current[4]*30-h;}//lower left
+if(current[3]>10&&current[4]>10){ x=current[3]*30-w; y=current[4]*30-h;}//lower right
+
+context.fillStyle="#ffffff";
+context.fillRect(x+30,y+30+(equipSel*30),150,120);
+var equi
+if(equipSel==0) equi=16;
+if(equipSel==1) equi=17;
+if(equipSel==2) equi=18;
+var img=window["img"+current[equi][2]];
+context.drawImage(img,x+90,y+30+(equipSel*30),30,30);
+
+
+var my_gradient=context.createLinearGradient(x+130,y+125,x+130,y+125+20);
+my_gradient.addColorStop(0,"#5E5E5E");
+my_gradient.addColorStop(1,"green");
+
+context.fillStyle=my_gradient;
+context.fillRect(x+130,y+125,45,20);
+context.beginPath();
+context.rect(x+130,y+125,45,20);
+context.stroke();
+context.fillStyle="#000000";
+context.font="12px Arial";
+context.fillText("Equip",x+130+5,y+125+15);
 }
 
 if(gameState[3]==3||gameState[3]==5){
-//FADE BACKGROUND
+//Fade Background
 context.globalAlpha=0.2;
 context.fillStyle="#000000";
 context.fillRect(30,30,600,600);
 
 context.globalAlpha=1;
-//DRAW INFO BOXES
+//draw info boxes
 context.fillStyle="#ffffff";
 context.fillRect(60,90,180,280);
 context.fillStyle="#ffffff";
@@ -912,10 +943,10 @@ if(current[3]<=10&&current[4]<=10){x=current[3]+1; y=current[4]+1;}//upper left
 if(current[3]>10&&current[4]<=10){ x=current[3]-5; y=current[4]+1;}//upper right
 if(current[3]<=10&&current[4]>10){ x=current[3]+1; y=current[4]-5;}//lower left
 if(current[3]>10&&current[4]>10){ x=current[3]-5; y=current[4]-5;}//lower right
-if(cursor[0]==x+3&&cursor[1]==y+1){setMode(8); equipSel=0;}
-if(cursor[0]==x+3&&cursor[1]==y+2){setMode(8); equipSel=1;}
-if(cursor[0]==x+3&&cursor[1]==y+3){setMode(8); equipSel=2;}
-if(cursor[0]>x+4||cursor[0]<x||cursor[1]>y+4||cursor[1]<y) setMode(0);//Close if select outside box
+if(current[1]==0&&cursor[0]==x+3&&cursor[1]==y+1){setMode(8); equipSel=0;}
+else if(current[1]==0&&cursor[0]==x+3&&cursor[1]==y+2){setMode(8); equipSel=1;}
+else if(current[1]==0&&cursor[0]==x+3&&cursor[1]==y+3){setMode(8); equipSel=2;}
+else setMode(0);//Close if not equipping
 }
 else if(gameState[3]==6){
 for(i=0;i<deployEntity.length;i++){
@@ -942,7 +973,10 @@ alert("You cannot place "+current[0]+" on top of "+entity[i][0]+".")
 }}
 if(d<6&&intheway==0){
 setMode(6);
-}}}
+}}
+else if(gameState[3]==8){
+setMode(4);
+}}
 
 if(action=="attack"){
 //CHANGE TO THAT ENTITY
@@ -1124,7 +1158,9 @@ else if(x=="up"&&cursor[1]!=1)cursor[1]--;
 else if(x=="down"&&cursor[1]!=20)cursor[1]++;
 current[3]=cursor[0];
 current[4]=cursor[1];
-}} else{
+}}else if(gameState[3]==8){//If equipping something
+
+} else{
 if(x=="right"&&cursor[0]!=30)cursor[0]++;
 else if(x=="left"&&cursor[0]!=1)cursor[0]--;
 else if(x=="up"&&cursor[1]!=1)cursor[1]--;
