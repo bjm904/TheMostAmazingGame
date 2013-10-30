@@ -275,10 +275,10 @@ if(gameState[3]==4){
 var x,y;
 var w=150;//Info box width and hight
 var h=150;
-if(entity[currentEntity][3]<=10&&entity[currentEntity][4]<=10){x=entity[currentEntity][3]*30+30; y=entity[currentEntity][4]*30+30;}//upper left
-if(entity[currentEntity][3]>10&&entity[currentEntity][4]<=10){ x=entity[currentEntity][3]*30-w; y=entity[currentEntity][4]*30+30;}//upper right
-if(entity[currentEntity][3]<=10&&entity[currentEntity][4]>10){ x=entity[currentEntity][3]*30+30; y=entity[currentEntity][4]*30-h;}//lower left
-if(entity[currentEntity][3]>10&&entity[currentEntity][4]>10){ x=entity[currentEntity][3]*30-w; y=entity[currentEntity][4]*30-h;}//lower right
+if(current[3]<=10&&current[4]<=10){x=current[3]*30+30; y=current[4]*30+30;}//upper left
+if(current[3]>10&&current[4]<=10){ x=current[3]*30-w; y=current[4]*30+30;}//upper right
+if(current[3]<=10&&current[4]>10){ x=current[3]*30+30; y=current[4]*30-h;}//lower left
+if(current[3]>10&&current[4]>10){ x=current[3]*30-w; y=current[4]*30-h;}//lower right
 context.globalAlpha=0.7;
 context.fillStyle="#ffffff";//background
 context.fillRect(x,y,w,h);
@@ -688,9 +688,9 @@ var levels=[
 ["Mammoth",5,4,0,0,20,20,[
 ["Enemy 1",1,0,2,1,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 ["Enemy 2",1,0,9,9,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
-["Enemy 3",1,0,10,10,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
+["Enemy 3",1,0,18,18,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 ["Enemy 4",1,0,18,2,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
-["Enemy 5",1,0,2,9,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]]
+["Enemy 5",1,0,2,18,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]]
 ],1,1],
 ["City",8,2,0,1,20,20,[
 ["Enemy 1",1,0,4,9,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
@@ -897,6 +897,17 @@ cursor[0]=current[3];
 cursor[1]=current[4];
 setMode(0);
 }}
+else if(gameState[3]==4){
+var x,y;
+if(current[3]<=10&&current[4]<=10){x=current[3]+1; y=current[4]+1;}//upper left
+if(current[3]>10&&current[4]<=10){ x=current[3]-5; y=current[4]+1;}//upper right
+if(current[3]<=10&&current[4]>10){ x=current[3]+1; y=current[4]-5;}//lower left
+if(current[3]>10&&current[4]>10){ x=current[3]-5; y=current[4]-5;}//lower right
+if(cursor[0]==x+3&&cursor[1]==y+1) alert("Weapon");
+if(cursor[0]==x+3&&cursor[1]==y+2) alert("Upper");
+if(cursor[0]==x+3&&cursor[1]==y+3) alert("Lower");
+if(cursor[0]>x+4||cursor[0]<x||cursor[1]>y+4||cursor[1]<y) setMode(0);//Close if select outside box
+}
 else if(gameState[3]==6){
 for(i=0;i<deployEntity.length;i++){
 if(i<3&&i>=0) y=3;
