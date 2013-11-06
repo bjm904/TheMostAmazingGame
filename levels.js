@@ -7,7 +7,7 @@ var levels=[
 ["Enemy 3",1,0,18,18,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 ["Enemy 4",1,0,18,2,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 ["Enemy 5",1,0,2,18,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]]
-],1,1,40,40],
+],1,1,30,30],
 ["City",8,2,0,1,20,20,[
 ["Enemy 1",1,0,4,9,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
 ["Enemy 2",1,0,17,11,5,10,1,"enemy",1,1,0,1,0,1,"Arial",['fillerWeapon',1,'fillerWeapon',0,0,0,0,0,0,0],['fillerUpper',1,'fillerUpper',0,0,0,0,0,0,0],['fillerLower',1,'fillerLower',0,0,0,0,0,0,0]],
