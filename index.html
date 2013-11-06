@@ -662,7 +662,7 @@ function debug(item){
 if(item=="distance"){
 for(i=1;i<21;i++){
 for(o=1;o<21;o++){
-d = distance(i,o,entity[currentEntity][3],entity[currentEntity][4]);
+d = distance(i,o,entity[currentEntity][3]+gameState[9],entity[currentEntity][4]+gameState[10]);
 context.fillStyle="#000000";
 context.font="10px Arial";    //DEBUG TO SHOW DISTANCE
 context.fillText(d,i*30+10,o*30+15);
@@ -670,18 +670,18 @@ context.fillText(d,i*30+10,o*30+15);
 if(item=="cords"){
 for(i=1;i<21;i++){
 for(o=1;o<21;o++){
-d = i+","+o;
+d = i-gameState[9]+","+(o-gameState[10]);
 context.fillStyle="#000000";
 context.font="9px Arial";    //DEBUG TO SHOW COORDINATES
 context.fillText(d,i*30+4,o*30+18);
 }}}
 if(item=="dupes"){
 for(i=0;i<map[levels[gameState[0]][4]].length;i++){
-var x=map[levels[gameState[0]][4]][i][3];
-var y=map[levels[gameState[0]][4]][i][4];
+var x=map[levels[gameState[0]][4]][i][3]+gameState[9];
+var y=map[levels[gameState[0]][4]][i][4]+gameState[10];
 for(o=0;o<map[levels[gameState[0]][4]].length;o++){
-var x1=map[levels[gameState[0]][4]][o][3];
-var y1=map[levels[gameState[0]][4]][o][4];
+var x1=map[levels[gameState[0]][4]][o][3]+gameState[9];
+var y1=map[levels[gameState[0]][4]][o][4]+gameState[10];
 if(i!=o){
 if(x==x1&&y==y1){
 context.globalAlpha=0.4;
@@ -1174,16 +1174,12 @@ else if(x=="left"){o=cursor[2]-1; p=cursor[3];}
 else if(x=="up"){p=cursor[3]-1; o=cursor[2];}
 else if(x=="down"){p=cursor[3]+1; o=cursor[2];}
 if(distance(o,p,1,1)<=5){
-if(x=="right"&&cursor[0]==20)gameState[9]--;
-else if(x=="left"&&cursor[0]==1)gameState[9]++;
-else if(x=="up"&&cursor[1]==1)gameState[10]++;
-else if(x=="down"&&cursor[1]==20)gameState[10]--;
 if(x=="right"&&cursor[0]!=20)cursor[0]++;
 else if(x=="left"&&cursor[0]!=1)cursor[0]--;
 else if(x=="up"&&cursor[1]!=1)cursor[1]--;
 else if(x=="down"&&cursor[1]!=20)cursor[1]++;
-current[3]=cursor[2];
-current[4]=cursor[3];
+current[3]=cursor[0];
+current[4]=cursor[1];
 }}else if(gameState[3]==8){//If equipping something
 
 } else{
@@ -1196,10 +1192,7 @@ else if(x=="left"&&cursor[0]!=1)cursor[0]--;
 else if(x=="up"&&cursor[1]!=1)cursor[1]--;
 else if(x=="down"&&cursor[1]!=20)cursor[1]++;
 }
-if(gameState[3]==7){//If deploying, have entity follow cursor
-current[3]=cursor[2];
-current[4]=cursor[3];
-}
+
 }
 
 //ATTACKING CLOCK AND FUNTION
