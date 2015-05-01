@@ -1,6 +1,6 @@
 The Most Amazing Game (Not real title)
 ==================
-PLAY IT = http://thefourthdimensi0n.com/game
+PLAY IT = https://rawgit.com/bjm904/TheMostAmazingGame/master/index.html
 
 This is a project for us to challenge ourselves, push our limits and learn. This entire game is written in HTML, Javascript and JQuery. With the exception of the online saving function witch is written in PHP and MySQL.
 
